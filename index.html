@@ -4740,7 +4740,85 @@ function sleepWindowDetailV108(sleep){
   return `Dormiu de ${sleep.window.replace("–"," a ").replace("-"," a ")}`;
 }
 
-function sleepBlock(d){
+
+// ============================================================================
+// v162 — IMPROVED DATA INTERPRETATION (Gastos, Sono, Alimentação)
+// ============================================================================
+function spendingByCategory(spending){
+  const categories={};
+  (spending||[]).forEach(x=>{
+    const cat=x.category||"Geral";
+    if(!categories[cat])categories[cat]={items:[],total:0};
+    const amt=Number(String(x.amount).replace(",","."))||0;
+    categories[cat].items.push({label:x.label,amount:amt});
+    categories[cat].total+=amt;
+  });
+  return categories;
+}
+function spendingBlockImproved(d){
+  const spending=d.spending||[];
+  const total=moneyTotal(d);
+  const byCategory=spendingByCategory(spending);
+  const categories=Object.entries(byCategory);
+  if(!spending.length){
+    return `<div class="card block" id="spending"><div class="block-head"><h3>💵 Spending</h3><span class="pill">0.00 €</span></div><div class="empty">Sem gastos nesse dia.</div></div>`;
+  }
+  return `<div class="card block" id="spending"><div class="block-head"><h3>💵 Spending</h3><span class="pill">${total.toFixed(2)} €</span></div><div class="spending-summary-improved">${categories.map(([cat,data])=>`<div class="spending-category-card"><div class="category-header"><span class="category-name">${esc(cat)}</span><span class="category-total"><b>${data.total.toFixed(2)} €</b></span></div><div class="category-items">${data.items.map(item=>`<div class="category-item"><span class="item-label">${esc(item.label)}</span><span class="item-amount">${item.amount.toFixed(2)} €</span></div>`).join("")}</div></div>`).join("")}</div></div>`;
+}
+function sleepQualityEmoji(quality){
+  const q=String(quality||"").toLowerCase();
+  if(q.includes("excelente")||q.includes("excellent")||q==="5")return"😴✨ Excelente";
+  if(q.includes("bom")||q.includes("good")||q==="4")return"😴 Bom";
+  if(q.includes("médio")||q.includes("medium")||q==="3")return"😐 Médio";
+  if(q.includes("ruim")||q.includes("poor")||q==="2")return"😔 Ruim";
+  if(q.includes("péssimo")||q.includes("terrible")||q==="1")return"😩 Péssimo";
+  return q||"—";
+}
+function sleepBlockImproved(d){
+  d.sleep||={duration:"",window:"",quality:""};
+  const duration=sleepDurationDisplayV108(d.sleep);
+  const quality=sleepQualityEmoji(d.sleep.quality);
+  const window=d.sleep.window||"—";
+  return `<div class="card block" id="sleep"><div class="block-head"><h3>😴 Sono</h3></div><div class="sleep-improved-grid"><div class="sleep-card-improved sleep-main"><small>Duração</small><b class="sleep-duration">${esc(duration)}</b><div class="sleep-window">${esc(window)}</div></div><div class="sleep-card-improved"><small>Qualidade</small><b class="sleep-quality">${esc(quality)}</b></div></div></div>`;
+}
+function foodByMealType(food){
+  const meals={};
+  (food||[]).forEach(x=>{
+    const meal=x.meal||"Refeição";
+    if(!meals[meal])meals[meal]=[];
+    meals[meal].push(x);
+  });
+  return meals;
+}
+function mealTypeOrder(mealName){
+  const name=String(mealName).toLowerCase();
+  if(name.includes("café")||name.includes("breakfast"))return 1;
+  if(name.includes("almoço")||name.includes("lunch"))return 2;
+  if(name.includes("lanche")||name.includes("snack"))return 3;
+  if(name.includes("jantar")||name.includes("dinner"))return 4;
+  return 5;
+}
+function foodBlockImproved(d){
+  const consumed=kcalRangeLabel(foodKcalRange(d));
+  const food=d.food||[];
+  if(!food.length){
+    return `<div class="card block" id="food"><div class="block-head"><h3>🍽️ Alimentação</h3><span class="pill">Consumido: ${consumed}</span></div><div class="empty">Sem alimentação registrada.</div></div>`;
+  }
+  const byMeal=foodByMealType(food);
+  const sortedMeals=Object.entries(byMeal).sort((a,b)=>mealTypeOrder(a[0])-mealTypeOrder(b[0]));
+  return `<div class="card block" id="food"><div class="block-head"><h3>🍽️ Alimentação</h3><span class="pill">Consumido: ${consumed}</span></div><div class="food-improved-list">${sortedMeals.map(([mealType,items])=>`<div class="meal-section"><div class="meal-header">${esc(mealType)}</div>${items.map(x=>`<div class="meal-item"><div class="item-detail"><span class="item-name">${esc(x.items)}</span>${x.note?`<span class="item-note">${esc(x.note)}</span>`:""}</div><span class="item-kcal">${esc(x.calories||"—")}</span></div>`).join("")}</div>`).join("")}</div></div>`;
+}
+
+// v162 IMPROVED DATA INTERPRETATION
+function spendingByCategory(spending){const categories={};(spending||[]).forEach(x=>{const cat=x.category||"Geral";if(!categories[cat])categories[cat]={items:[],total:0};const amt=Number(String(x.amount).replace(",","."))||0;categories[cat].items.push({label:x.label,amount:amt});categories[cat].total+=amt;});return categories;}
+function spendingBlockImproved(d){const spending=d.spending||[];const total=moneyTotal(d);const byCategory=spendingByCategory(spending);const categories=Object.entries(byCategory);if(!spending.length){return `<div class="card block" id="spending"><div class="block-head"><h3>💵 Spending</h3><span class="pill">0.00 EUR</span></div><div class="empty">Sem gastos nesse dia.</div></div>`;}return `<div class="card block" id="spending"><div class="block-head"><h3>💵 Spending</h3><span class="pill">${total.toFixed(2)} EUR</span></div><div class="spending-improved">${categories.map(([cat,data])=>`<div class="spending-cat"><div class="cat-head"><b>${esc(cat)}</b><b>${data.total.toFixed(2)} EUR</b></div><div class="cat-items">${data.items.map(item=>`<div class="cat-item"><span>${esc(item.label)}</span><b>${item.amount.toFixed(2)} EUR</b></div>`).join("")}</div></div>`).join("")}</div></div>`;}
+function sleepQualityEmoji(quality){const q=String(quality||"").toLowerCase();if(q.includes("excelente")||q.includes("excellent")||q==="5")return"Excelente";if(q.includes("bom")||q.includes("good")||q==="4")return"Bom";if(q.includes("medio")||q.includes("medium")||q==="3")return"Medio";if(q.includes("ruim")||q.includes("poor")||q==="2")return"Ruim";if(q.includes("pessimo")||q.includes("terrible")||q==="1")return"Pessimo";return q||"—";}
+function sleepBlockImproved(d){d.sleep||={duration:"",window:"",quality:""};const duration=sleepDurationDisplayV108(d.sleep);const quality=sleepQualityEmoji(d.sleep.quality);const window=d.sleep.window||"—";return `<div class="card block" id="sleep"><div class="block-head"><h3>😴 Sono</h3></div><div class="sleep-grid-improved"><div class="sleep-card"><small>Duracao</small><b>${esc(duration)}</b><div class="sleep-sub">${esc(window)}</div></div><div class="sleep-card"><small>Qualidade</small><b>${esc(quality)}</b></div></div></div>`;}
+function foodByMealType(food){const meals={};(food||[]).forEach(x=>{const meal=x.meal||"Refeicao";if(!meals[meal])meals[meal]=[];meals[meal].push(x);});return meals;}
+function mealTypeOrder(mealName){const name=String(mealName).toLowerCase();if(name.includes("cafe")||name.includes("breakfast"))return 1;if(name.includes("almoco")||name.includes("lunch"))return 2;if(name.includes("lanche")||name.includes("snack"))return 3;if(name.includes("jantar")||name.includes("dinner"))return 4;return 5;}
+function foodBlockImproved(d){const consumed=kcalRangeLabel(foodKcalRange(d));const food=d.food||[];if(!food.length){return `<div class="card block" id="food"><div class="block-head"><h3>Alimentacao</h3><span class="pill">Consumido: ${consumed}</span></div><div class="empty">Sem alimentacao registrada.</div></div>`;}const byMeal=foodByMealType(food);const sortedMeals=Object.entries(byMeal).sort((a,b)=>mealTypeOrder(a[0])-mealTypeOrder(b[0]));return `<div class="card block" id="food"><div class="block-head"><h3>Alimentacao</h3><span class="pill">Consumido: ${consumed}</span></div><div class="food-improved">${sortedMeals.map(([mealType,items])=>`<div class="meal-sec"><div class="meal-name">${esc(mealType)}</div>${items.map(x=>`<div class="meal-item"><div><span>${esc(x.items)}</span>${x.note?`<div class="meal-note">${esc(x.note)}</div>`:""}  </div><span>${esc(x.calories||"")}</span></div>`).join("")}</div>`).join("")}</div></div>`;}
+
+function sleepBlockImproved(d){
   d.sleep ||= {duration:"",window:"",quality:""};
   const duration=sleepDurationDisplayV108(d.sleep);
   const detail=sleepWindowDetailV108(d.sleep);
@@ -4817,11 +4895,11 @@ function renderDaily(){
         </div>
 
         ${moodBlock(d)}
-        ${sleepBlock(d)}
+        ${sleepBlockImproved(d)}
         ${screenBlock(d)}
-        ${spendingBlock(d)}
+        ${spendingBlockImproved(d)}
         ${exerciseBlock(d)}
-        ${foodBlock(d)}
+        ${foodBlockImproved(d)}
       </div>
     </div>
   </section>`;
@@ -4941,7 +5019,7 @@ function screenBlock(d){
     ${renderNotificationsV119(d.screen)}
   </div>`;
 }
-function spendingBlock(d){
+function spendingBlockImproved(d){
   return `<div class="card block" id="spending">
     <div class="block-head"><h3>💵 Spending</h3><span class="pill">${moneyTotal(d).toFixed(2)} €</span></div>
     <div class="clean-entry-list-v97">${(d.spending||[]).map((x,i)=>`<div class="entry">
@@ -5003,7 +5081,7 @@ function addExercise(){
   });
   save();renderPage(currentPage);setTimeout(()=>location.hash="exercise",50);
 }
-function foodBlock(d){
+function foodBlockImproved(d){
   const consumed=kcalRangeLabel(foodKcalRange(d));
   return `<div class="card block" id="food">
     <div class="block-head"><h3>🍽️ Alimentação</h3><span class="pill">Consumido: ${consumed}</span></div>
@@ -5065,7 +5143,7 @@ function addHabitNote(){
 
 function renderSleepPage(){
   const d=day();
-  shell("😴 Sono", sleepBlock(d));
+  shell("😴 Sono", sleepBlockImproved(d));
 }
 
 function renderMoodPage(){
@@ -5078,7 +5156,7 @@ function renderScreenPage(){
 }
 function renderSpendingPage(){
   const d=day();
-  shell("💵 Spending", spendingBlock(d));
+  shell("💵 Spending", spendingBlockImproved(d));
 }
 function renderExercisePage(){
   const d=day();
@@ -5086,7 +5164,7 @@ function renderExercisePage(){
 }
 function renderFoodPage(){
   const d=day();
-  shell("🍽️ Alimentação", foodBlock(d));
+  shell("🍽️ Alimentação", foodBlockImproved(d));
 }
 
 
