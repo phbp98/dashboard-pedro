@@ -2586,7 +2586,63 @@ textarea{min-height:110px;resize:vertical}
 }
 
 </style>
-<style id="target-v139-style">.target-tabs-v139{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 14px}.target-tab-v139{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer;color:var(--text)}.target-tab-v139.active{background:var(--text);color:var(--bg);border-color:var(--text)}.target-contact-list-v139{display:grid;gap:8px;margin-top:10px}.target-contact-v139{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(255,255,255,.035)}.target-contact-head-v139{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.target-contact-name-v139{font-weight:800}.target-contact-role-v139{font-size:12px;color:var(--muted);margin-top:2px}.target-contact-actions-v139{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.target-mini-v139{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.target-mini-v139 span{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:3px 7px;color:var(--muted)}.target-base-details-v139{margin-top:10px}.target-base-details-v139 summary{cursor:pointer;color:var(--muted);font-size:12px}.target-raw-grid-v139{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:8px}.target-raw-grid-v139 div{border:1px solid var(--line);border-radius:10px;padding:8px;background:rgba(255,255,255,.025)}.target-raw-grid-v139 small{display:block;color:var(--muted);font-size:10px}.target-raw-grid-v139 b{font-size:12px;font-weight:600}.target-note-v139{font-size:12px;color:var(--muted);margin-top:8px}.target-card-v135.compact-v139{grid-template-columns:1fr}.target-card-v135.compact-v139 .target-side-v135{border-left:0;padding-left:0}.target-status-high-v139{color:#0f5132;background:#d1e7dd;border-color:#badbcc}.target-status-medium-v139{color:#664d03;background:#fff3cd;border-color:#ffecb5}.target-status-low-v139{color:#842029;background:#f8d7da;border-color:#f5c2c7}</style>
+<style id="target-v139-style">.target-tabs-v139{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 14px}.target-tab-v139{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer;color:var(--text)}.target-tab-v139.active{background:var(--text);color:var(--bg);border-color:var(--text)}.target-contact-list-v139{display:grid;gap:8px;margin-top:10px}.target-contact-v139{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(255,255,255,.035)}.target-contact-head-v139{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.target-contact-name-v139{font-weight:800}.target-contact-role-v139{font-size:12px;color:var(--muted);margin-top:2px}.target-contact-actions-v139{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.target-mini-v139{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.target-mini-v139 span{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:3px 7px;color:var(--muted)}.target-base-details-v139{margin-top:10px}.target-base-details-v139 summary{cursor:pointer;color:var(--muted);font-size:12px}.target-raw-grid-v139{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:8px}.target-raw-grid-v139 div{border:1px solid var(--line);border-radius:10px;padding:8px;background:rgba(255,255,255,.025)}.target-raw-grid-v139 small{display:block;color:var(--muted);font-size:10px}.target-raw-grid-v139 b{font-size:12px;font-weight:600}.target-note-v139{font-size:12px;color:var(--muted);margin-top:8px}.target-card-v135.compact-v139{grid-template-columns:1fr}.target-card-v135.compact-v139 .target-side-v135{border-left:0;padding-left:0}.target-status-high-v139{color:#0f5132;background:#d1e7dd;border-color:#badbcc}.target-status-medium-v139{color:#664d03;background:#fff3cd;border-color:#ffecb5}.target-status-low-v139{color:#842029;background:#f8d7da;border-color:#f5c2c7}
+/* v162 — IMPROVED DATA DISPLAY CSS */
+.spending-improved{display:grid;gap:12px;margin-top:12px;}
+.spending-cat{border:1px solid var(--border-color);border-radius:8px;padding:12px;background:var(--card-bg);}
+.cat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:600;color:var(--accent);border-bottom:1px solid var(--border-color);padding-bottom:8px;}
+.cat-items{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.cat-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:14px;}
+.cat-item span:first-child{flex:1;}
+.cat-item b{color:var(--accent);font-weight:600;}
+
+.sleep-grid-improved{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.sleep-card{border:1px solid var(--border-color);border-radius:8px;padding:16px;background:var(--card-bg);text-align:center;}
+.sleep-card small{display:block;color:var(--text-secondary);font-size:12px;margin-bottom:8px;}
+.sleep-card b{display:block;font-size:20px;color:var(--accent);margin:8px 0;}
+.sleep-sub{font-size:13px;color:var(--text-secondary);margin-top:6px;}
+
+.food-improved{display:flex;flex-direction:column;gap:16px;margin-top:12px;}
+.meal-sec{border:1px solid var(--border-color);border-radius:8px;padding:12px;background:var(--card-bg);}
+.meal-name{font-weight:600;color:var(--accent);margin-bottom:10px;font-size:15px;border-bottom:1px solid var(--border-color);padding-bottom:8px;}
+.meal-item{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--subtle-border);gap:12px;}
+.meal-item:last-child{border-bottom:none;}
+.meal-item>div{flex:1;display:flex;flex-direction:column;gap:4px;}
+.meal-item span:first-child{font-weight:500;color:var(--text-primary);font-size:14px;}
+.meal-item span:last-child{color:var(--accent);font-weight:600;text-align:right;white-space:nowrap;}
+.meal-note{font-size:12px;color:var(--text-secondary);font-style:italic;margin-top:2px;}
+
+@media(max-width:768px){
+  .sleep-grid-improved{grid-template-columns:1fr;}
+  .spending-improved{gap:10px;}
+}
+
+
+/* v162 IMPROVED DATA DISPLAY CSS */
+.spending-improved{display:grid;gap:12px;margin-top:12px;}
+.spending-cat{border:1px solid var(--border-color);border-radius:8px;padding:12px;background:var(--card-bg);}
+.cat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:600;color:var(--accent);border-bottom:1px solid var(--border-color);padding-bottom:8px;}
+.cat-items{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+.cat-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:14px;}
+.cat-item span:first-child{flex:1;}
+.cat-item b{color:var(--accent);font-weight:600;}
+.sleep-grid-improved{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.sleep-card{border:1px solid var(--border-color);border-radius:8px;padding:16px;background:var(--card-bg);text-align:center;}
+.sleep-card small{display:block;color:var(--text-secondary);font-size:12px;margin-bottom:8px;}
+.sleep-card b{display:block;font-size:20px;color:var(--accent);margin:8px 0;}
+.sleep-sub{font-size:13px;color:var(--text-secondary);margin-top:6px;}
+.food-improved{display:flex;flex-direction:column;gap:16px;margin-top:12px;}
+.meal-sec{border:1px solid var(--border-color);border-radius:8px;padding:12px;background:var(--card-bg);}
+.meal-name{font-weight:600;color:var(--accent);margin-bottom:10px;font-size:15px;border-bottom:1px solid var(--border-color);padding-bottom:8px;}
+.meal-item{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--subtle-border);gap:12px;}
+.meal-item:last-child{border-bottom:none;}
+.meal-item>div{flex:1;display:flex;flex-direction:column;gap:4px;}
+.meal-item span:first-child{font-weight:500;color:var(--text-primary);font-size:14px;}
+.meal-item span:last-child{color:var(--accent);font-weight:600;text-align:right;white-space:nowrap;}
+.meal-note{font-size:12px;color:var(--text-secondary);font-style:italic;margin-top:2px;}
+@media(max-width:768px){.sleep-grid-improved{grid-template-columns:1fr;}.spending-improved{gap:10px;}}
+
+</style>
 
 <!-- v154 — Drive/AppScript autoload for GitHub Pages.
      The target/company database loads automatically when the Empresas-alvo page opens.
