@@ -11622,7 +11622,7 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
   }
   function syncCalendarFromSheetsRows(rows){
     if(!rows||!rows.length) return;
-    var mapped=rows.map(function(row){return {title:row["Title"]||"",type:row["Type"]||"Événement",date:row["Date"]||"",start:row["Start"]||"",end:row["End"]||"",location:row["Location"]||"",status:row["Status"]||"Confirmed",notes:row["Notes"]||"",url:row["URL"]||"",source:"Sheets"};}).filter(function(e){return e.title&&e.date;});
+    var mapped=rows.map(function(row){return {title:row["Title"]||"",type:row["Type"]||"Événement",date:row["Date"]||"",start:row["Start"]||"",end:row["End"]||"",location:row["Location"]||"",status:row["Status"]||"Confirmed",notes:row["Notes"]||"",url:row["URL"]||"",source:"Sheets"};}).filter(function(e){if((e.start==="08:30"||e.start==="22:00")}).filter(function(e){return e.title&&e.date;});}).filter(function(e){return e.title&&e.date;});(e.title||"").toLowerCase().includes("check-in"))return false;return e.title}).filter(function(e){return e.title&&e.date;});}).filter(function(e){return e.title&&e.date;});e.date;});
     if(mapped.length){state.events=mapped;state._calendarSyncedFromSheets=true;save();if(typeof renderPage==="function")renderPage(currentPage||"home");}
   }
 
