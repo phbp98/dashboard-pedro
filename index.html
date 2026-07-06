@@ -5075,19 +5075,22 @@ function screenBlock(d){
     ${renderNotificationsV119(d.screen)}
   </div>`;
 }
-function categoryEmoji(cat){
-  const c=String(cat||"").toLowerCase();
-  if(c.includes("mercado")||c.includes("compras")||c.includes("superm"))return"🛒";
-  if(c.includes("restaurant")||c.includes("comida")||c.includes("refeição"))return"🍽️";
-  if(c.includes("diversão")||c.includes("lazer")||c.includes("cinema")||c.includes("show"))return"🎭";
-  if(c.includes("transporte")||c.includes("uber")||c.includes("ônibus")||c.includes("metro"))return"🚗";
-  if(c.includes("roupa")||c.includes("vestiário")||c.includes("sapato")||c.includes("lavar"))return"👕";
-  if(c.includes("saúde")||c.includes("farmácia")||c.includes("médico"))return"⚕️";
-  if(c.includes("educação")||c.includes("curso")||c.includes("livro"))return"📚";
-  if(c.includes("cultura")||c.includes("museu")||c.includes("louvre")||c.includes("ticket"))return"🎨";
-  if(c.includes("assinatura")||c.includes("netflix")||c.includes("spotify"))return"📺";
-  if(c.includes("fitness")||c.includes("gym")||c.includes("academia"))return"💪";
-  return"💰";
+var SPENDING_CATEGORIES_V163={
+  Mercado:{keywords:["mercado","carrefour","supermercado","compras","auchan","intermarché","monoprix","franprix"],emoji:"🛒",color:"#5f8ff5",colorBg:"rgba(95,143,245,0.12)"},
+  Bares:{keywords:["bar","cerveja","bebida","vinho","aperitivo","drink","café","tea","chá","restaurante","restaurant","janta"],emoji:"🍺",color:"#75d982",colorBg:"rgba(117,217,130,0.12)"},
+  "Lavar roupa":{keywords:["lavar","roupa","tintoraria","lavanderia","sapato","vestiário","roupa"],emoji:"👕",color:"#b16ad6",colorBg:"rgba(177,106,214,0.12)"},
+  Outros:{keywords:[],emoji:"💰",color:"#a9afbd",colorBg:"rgba(169,175,189,0.12)"}
+};
+function classifySpendingItem(label,amount){
+  if(!label)return"Outros";
+  const txt=String(label).toLowerCase();
+  for(const [cat,config]of Object.entries(SPENDING_CATEGORIES_V163)){
+    if(cat==="Outros")continue;
+    for(const kw of config.keywords){
+      if(txt.includes(kw))return cat;
+    }
+  }
+  return"Outros";
 }
 function parseSpendingText(text){
   const entries=[];
@@ -5097,29 +5100,32 @@ function parseSpendingText(text){
   parts.forEach(part=>{
     const match=part.match(/^([^:0-9]+?):\s*(\d+(?:,\d+)?)\s*(?:euros?)?$/i);
     if(match){
-      const cat=match[1].trim();
+      const label=match[1].trim();
       const amt=parseFloat(match[2].replace(",","."));
-      entries.push({category:cat,amount:amt});
+      const cat=classifySpendingItem(label,amt);
+      entries.push({category:cat,label:label,amount:amt});
     }
   });
   return entries;
 }
-function spendingByParsedText(spending){
+function spendingByFixedCategories(spending){
   const categories={};
+  Object.keys(SPENDING_CATEGORIES_V163).forEach(cat=>{
+    categories[cat]={items:[],total:0};
+  });
   (spending||[]).forEach(x=>{
-    let cat=x.category||"";
+    let cat=x.category;
     if(!cat&&x.label){
       const parsed=parseSpendingText(x.label);
       parsed.forEach(p=>{
-        const c=p.category;
-        if(!categories[c])categories[c]={items:[],total:0};
-        categories[c].items.push({label:c,amount:p.amount});
-        categories[c].total+=p.amount;
+        if(!categories[p.category])categories[p.category]={items:[],total:0};
+        categories[p.category].items.push({label:p.label,amount:p.amount});
+        categories[p.category].total+=p.amount;
       });
     }else{
-      if(!cat)cat="Geral";
-      if(!categories[cat])categories[cat]={items:[],total:0};
+      cat=classifySpendingItem(x.label||"",x.amount);
       const amt=Number(String(x.amount).replace(",","."))||0;
+      if(!categories[cat])categories[cat]={items:[],total:0};
       categories[cat].items.push({label:x.label||cat,amount:amt});
       categories[cat].total+=amt;
     }
@@ -5131,13 +5137,18 @@ function spendingBlockImproved(d){
   if(!spending.length){
     return`<div class="card block" id="spending"><div class="block-head"><h3>💵 Spending</h3><span class="pill">0.00€</span></div><div class="empty">Sem gastos nesse dia.</div></div>`;
   }
-  const byCategory=spendingByParsedText(spending);
+  const byCategory=spendingByFixedCategories(spending);
   const total=Object.values(byCategory).reduce((s,c)=>s+c.total,0);
-  const categoryCards=Object.entries(byCategory).sort((a,b)=>b[1].total-a[1].total).map(([cat,data])=>{
-    const pct=Math.round(data.total/total*100);
-    return`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="font-weight:500"><span>${categoryEmoji(cat)}</span> ${esc(cat)}</div>
-      <div style="text-align:right"><b>${data.total.toFixed(2)}€</b> <span style="color:var(--muted);font-size:12px">${pct}%</span></div>
+  const categoryCards=Object.entries(byCategory).filter(([cat,data])=>data.total>0).sort((a,b)=>b[1].total-a[1].total).map(([cat,data])=>{
+    const config=SPENDING_CATEGORIES_V163[cat];
+    const pct=total>0?Math.round(data.total/total*100):0;
+    const items=data.items.map(item=>`<div style="font-size:13px;margin-top:4px;color:var(--text)"><span style="color:var(--muted)">•</span> ${esc(item.label)}: <b>${item.amount.toFixed(2)}€</b></div>`).join("");
+    return`<div style="padding:12px;border-radius:8px;background:${config.colorBg};border-left:4px solid ${config.color};margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${items?"8px":"0"}">
+        <div style="font-weight:600;color:var(--text)"><span>${config.emoji}</span> ${esc(cat)}</div>
+        <div style="text-align:right"><b style="color:${config.color}">${data.total.toFixed(2)}€</b> <span style="color:var(--muted);font-size:12px">${pct}%</span></div>
+      </div>
+      ${items?`<div style="padding-top:8px;border-top:1px solid ${config.color}33">${items}</div>`:""}
     </div>`;
   }).join("");
   return`<div class="card block" id="spending">
