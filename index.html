@@ -384,7 +384,6 @@ textarea{min-height:110px;resize:vertical}
   .link-card,.doc-card{grid-template-columns:1fr}
 }
 
-/* v59 — keep individual tabs visible + stronger Home/Daily */
 .home-hero{
   display:grid;
   grid-template-columns:1.25fr .9fr;
@@ -451,7 +450,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v60 — fix Daily calendar overflow */
 .daily-shell{
   grid-template-columns:390px minmax(0,1fr) !important;
   align-items:start;
@@ -478,7 +476,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v63 — better spatial distribution in Daily */
 .daily-shell{
   grid-template-columns:360px minmax(0,1fr) !important;
   align-items:start !important;
@@ -555,7 +552,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v64 — Daily in two main blocks */
 .daily-right-layout-v64{
   min-width:0;
   display:grid;
@@ -599,7 +595,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v65 — Applications page restored */
 .applications-stats-v65{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
@@ -705,7 +700,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v67 — rich diary page */
 .diary-layout-v67{
   display:grid;
   grid-template-columns:minmax(0,1.45fr) minmax(280px,.75fr);
@@ -737,12 +731,10 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v145 — food estimation policy
    - CROUS meals: prioritize nutritional values provided by CROUS/user.
    - Non-CROUS meals: estimate with TACO/TBCA/reference values internally.
    - Store only final kcal estimate/range + source/confidence; do not embed nutrition table.
 */
-/* v68 — calorie tracking */
 .pill{
   white-space:nowrap;
 }
@@ -751,7 +743,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v69 — Daily with full-width second block */
 .daily-two-rows-v69{
   display:grid;
   gap:16px;
@@ -815,7 +806,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v71 — calendar is connected and uses standard daily calendar */
 .calendar-wrap-v69 .calendar,
 .daily-top-row-v69 .calendar{
   width:100%;
@@ -823,7 +813,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v74 — make keyboard-selected sidebar item easy to see */
 .sidebar .nav.keyboard-hover{
   background:rgba(143,168,255,.18) !important;
   border-color:rgba(143,168,255,.60) !important;
@@ -834,7 +823,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v75 — stable sidebar keyboard highlight */
 .sidebar .nav.keyboard-hover{
   background:rgba(143,168,255,.18) !important;
   border-color:rgba(143,168,255,.60) !important;
@@ -845,7 +833,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v76 — stable visible sidebar selection */
 .sidebar .nav.keyboard-hover{
   background:rgba(143,168,255,.18) !important;
   border-color:rgba(143,168,255,.60) !important;
@@ -856,7 +843,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v77 — Hoje as impact/focus page */
 .hoje-page-v77 h1{
   font-size:34px;
   line-height:1.05;
@@ -959,7 +945,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v78 — Events page */
 .events-stats-v78{
   display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
@@ -1042,7 +1027,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v79 — Events calendar views */
 .event-calendar-panel-v79{
   margin-bottom:16px;
 }
@@ -1180,7 +1164,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v80 — clearer event calendar navigation */
 .event-controls-wrap-v80{
   display:grid;
   gap:8px;
@@ -1221,7 +1204,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v81 — Google Calendar-like Events page */
 .events-google-v81{
   padding:18px;
 }
@@ -1412,7 +1394,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v82 — useful Events layout */
 .events-main-v82{
   display:grid;
   grid-template-columns:minmax(0,1fr);
@@ -1447,7 +1428,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v83 — smaller Events calendar, keep useful sections below */
 .events-v82 .gcal-calendar-card-v81,
 .events-google-v81 .gcal-calendar-card-v81{
   padding:10px !important;
@@ -1502,7 +1482,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v84 — page purpose badge */
 .purpose-badge-v84{
   display:inline-grid;
   gap:3px;
@@ -1527,7 +1506,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v86 — Diplôme / Doctorat event type */
 .event-diplome-v86{
   border-color:rgba(177,106,214,.55) !important;
   color:#e8c8ff !important;
@@ -1535,7 +1513,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v89 — clean Home header */
 .hoje-page-v77 .page-head .small{
   margin-top:2px;
   color:var(--muted);
@@ -1545,7 +1522,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v90 — screen time activations */
 .screen-activations-v90{
   margin-top:12px;
 }
@@ -1576,7 +1552,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v92 — Home with Tasks before Events + health metrics */
 .home-tasks-v92{
   margin-bottom:14px;
 }
@@ -1617,7 +1592,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v93 — Home as morning command center */
 .home-command-v93{
   display:grid;
   gap:14px;
@@ -1789,7 +1763,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v94 — visual Tasks page */
 .tasks-page-v94 .page-head{
   align-items:flex-start;
 }
@@ -1925,7 +1898,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v95 — CV & Lettres filters + Companies target page */
 .docs-toolbar-v95,
 .companies-toolbar-v95{
   display:flex;
@@ -2055,7 +2027,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v96 — cleaner Daily/Home labels */
 .purpose-badge-v84{
   display:none !important;
 }
@@ -2064,7 +2035,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v97 — clean view mode: remove useless empty input rows */
 .view-metric-v97{
   background:#111318;
   border:1px solid var(--border);
@@ -2095,7 +2065,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v98 — user friendly docs + companies restored */
 .docs-toolbar-v98,
 .companies-toolbar-v98{
   display:flex;
@@ -2217,7 +2186,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v99 — Exercise color coding */
 .exercise-entry-v99{
   border-left:5px solid var(--border) !important;
   position:relative;
@@ -2273,7 +2241,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v105 — Home: events first, then prioritized open tasks */
 .home-task-panel-v105{
   margin-top:0;
 }
@@ -2392,7 +2359,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v106 — standardized mood / energy / focus indicators */
 .mood-grid-v106{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
@@ -2447,7 +2413,6 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v108 — Sleep: duration first, schedule as detail */
 .sleep-card-v108{
   border:1px solid var(--border);
   background:#111318;
@@ -2477,14 +2442,12 @@ textarea{min-height:110px;resize:vertical}
 }
 
 
-/* v127 — Radar 3D targets + color code */
 .target-legend-v127{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}.target-legend-v127 span,.target-pill-v127{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:5px 9px;font-size:12px;font-weight:850;color:var(--muted);background:rgba(255,255,255,.035)}
 .target-dot-v127{width:9px;height:9px;border-radius:50%;display:inline-block}.target-dot-existing-v127{background:#5f8ff5}.target-dot-new-v127{background:#75d982}.target-dot-excel-v127{background:#f1c40f}.target-dot-monitor-v127{background:#7c8496}.target-dot-low-v127{background:#ff8b8b}
 .target-card-v127{border-left:5px solid var(--border)!important}.target-existing-v127{border-color:rgba(95,143,245,.48)!important;border-left-color:#5f8ff5!important;background:linear-gradient(135deg,rgba(95,143,245,.09),rgba(17,19,24,1))!important}.target-new-v127{border-color:rgba(117,217,130,.42)!important;border-left-color:#75d982!important;background:linear-gradient(135deg,rgba(117,217,130,.09),rgba(17,19,24,1))!important}.target-excel-v127{border-color:rgba(241,196,15,.38)!important;border-left-color:#f1c40f!important;background:linear-gradient(135deg,rgba(241,196,15,.08),rgba(17,19,24,1))!important}.target-monitor-v127{border-color:rgba(124,132,150,.35)!important;border-left-color:#7c8496!important}.target-low-v127{border-color:rgba(255,139,139,.38)!important;border-left-color:#ff8b8b!important;background:linear-gradient(135deg,rgba(255,139,139,.06),rgba(17,19,24,1))!important}
 .target-grid-v127{display:grid;gap:10px}.target-meta-v127{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.target-why-v127{color:var(--muted);font-size:13px;line-height:1.38}.target-matrix-v127{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:9px}.target-matrix-v127 div{border:1px solid var(--border);background:rgba(255,255,255,.025);border-radius:12px;padding:8px}.target-matrix-v127 small{display:block;color:var(--muted2);font-size:11px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}.target-matrix-v127 b{font-size:12px;line-height:1.25}.target-top-v127{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}.target-filters-v127{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px}.target-source-note-v127{border:1px solid rgba(143,168,255,.25);background:rgba(143,168,255,.08);border-radius:16px;padding:13px;margin-bottom:14px;color:var(--muted);line-height:1.4}.target-source-note-v127 b{color:var(--text)}@media(max-width:950px){.target-top-v127,.target-filters-v127,.target-matrix-v127{grid-template-columns:1fr}}
 
 
-/* v135 — full strategic target database, no data loss */
 .target-full-note-v135 {
   border:1px solid rgba(143,168,255,.32);
   background:rgba(143,168,255,.08);
@@ -2587,7 +2550,6 @@ textarea{min-height:110px;resize:vertical}
 
 </style>
 <style id="target-v139-style">.target-tabs-v139{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 14px}.target-tab-v139{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer;color:var(--text)}.target-tab-v139.active{background:var(--text);color:var(--bg);border-color:var(--text)}.target-contact-list-v139{display:grid;gap:8px;margin-top:10px}.target-contact-v139{border:1px solid var(--line);border-radius:14px;padding:10px;background:rgba(255,255,255,.035)}.target-contact-head-v139{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.target-contact-name-v139{font-weight:800}.target-contact-role-v139{font-size:12px;color:var(--muted);margin-top:2px}.target-contact-actions-v139{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.target-mini-v139{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.target-mini-v139 span{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:3px 7px;color:var(--muted)}.target-base-details-v139{margin-top:10px}.target-base-details-v139 summary{cursor:pointer;color:var(--muted);font-size:12px}.target-raw-grid-v139{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:8px}.target-raw-grid-v139 div{border:1px solid var(--line);border-radius:10px;padding:8px;background:rgba(255,255,255,.025)}.target-raw-grid-v139 small{display:block;color:var(--muted);font-size:10px}.target-raw-grid-v139 b{font-size:12px;font-weight:600}.target-note-v139{font-size:12px;color:var(--muted);margin-top:8px}.target-card-v135.compact-v139{grid-template-columns:1fr}.target-card-v135.compact-v139 .target-side-v135{border-left:0;padding-left:0}.target-status-high-v139{color:#0f5132;background:#d1e7dd;border-color:#badbcc}.target-status-medium-v139{color:#664d03;background:#fff3cd;border-color:#ffecb5}.target-status-low-v139{color:#842029;background:#f8d7da;border-color:#f5c2c7}
-/* v162 — IMPROVED DATA DISPLAY CSS */
 .spending-improved{display:grid;gap:12px;margin-top:12px;}
 .spending-cat{border:1px solid var(--border-color);border-radius:8px;padding:12px;background:var(--card-bg);}
 .cat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:600;color:var(--accent);border-bottom:1px solid var(--border-color);padding-bottom:8px;}
@@ -2851,7 +2813,6 @@ let state=JSON.parse(localStorage.getItem(storeKey)||"null") || starter;
 let currentPage="home";
 let navIndex=-1;
 
-/* v159 — safe restore from older dashboard keys.
    Why: v157/v158 used a different localStorage key. That made the dashboard look empty even when
    the user's previous v116 data still existed in the browser. This restores old daily records
    without overwriting newer data. */
@@ -3087,7 +3048,6 @@ function shell(title,content){
 
 
 
-/* v70 — robust calendar initialization */
 function ensureCalendarState(){
   const today = new Date();
   let base = today;
@@ -3198,7 +3158,6 @@ function calendarBlock(){
 
 
 
-/* v84 — clear distinction between Hoje, Daily and Diário */
 function pagePurposeBadgeV84(type){
   const map = {
     hoje: {
@@ -3238,7 +3197,6 @@ function toggleFocusTask(index){
   fd.tasks[index].done = !fd.tasks[index].done;
   save();
   
-/* v78 — Google Calendar events imported */
 (function patchEventsV78(){
   if(state._calendarSyncedFromSheets) return;
   state.events = [
@@ -3291,7 +3249,6 @@ function toggleFocusTask(index){
 })();
 
 
-/* v86 — add confirmed PSL doctorate ceremony */
 (function patchCeremoniePSLV86(){
   state.events = state.events || [];
 
@@ -3326,7 +3283,6 @@ function toggleFocusTask(index){
 
 
 
-/* v88 — force Hoje to real current date on load */
 function localTodayISO(){
   const now = new Date();
   const y = now.getFullYear();
@@ -3379,7 +3335,6 @@ function setupMidnightRolloverV88(){
       createEmptyDayV88(now);
       save();
       
-/* v90 — update Screen Time for 2026-05-20 from Digital Wellbeing screenshots */
 (function patchScreenTime20260520V90(){
   state.daily = state.daily || {};
   state.daily["2026-05-20"] = state.daily["2026-05-20"] || {};
@@ -3487,7 +3442,6 @@ forceHojeToRealTodayV88();
 setupMidnightRolloverV88();
 
 
-/* v90 — update Screen Time for 2026-05-20 from Digital Wellbeing screenshots */
 (function patchScreenTime20260520V90(){
   state.daily = state.daily || {};
   state.daily["2026-05-20"] = state.daily["2026-05-20"] || {};
@@ -3607,7 +3561,6 @@ function renderFocusTaskCard(t,index){
 }
 
 
-/* v93 — Home helpers */
 function homeTodayDataV93(){
   const d = day();
   const fd = getFocusDay ? getFocusDay() : {};
@@ -3661,7 +3614,6 @@ function renderHomeCompactEventV93(e){
 }
 
 
-/* v105 — Home helpers: open prioritized tasks with visible categories */
 function normPriorityHomeV105(priority){
   const p=String(priority||"").toLowerCase();
   if(p.includes("critical")) return "high";
@@ -3856,7 +3808,6 @@ function quickMarkExercise(){
   if(pending)pending.done=true;
   else d.exercise.push({type:"Exercício",name:"Atividade física",duration:"",done:true,note:"Marcado pela Home."});
   save();
-/* v60 — update 20/05 exercise: caminhada 1h */
 (function patchWalk20(){
   if(!state.daily) return;
   if(!state.daily["2026-05-20"]) return;
@@ -3877,7 +3828,6 @@ function quickMarkExercise(){
 })();
 
 
-/* v61 — add sleep data and job-search updates */
 (function patchSleepAndUpdatesV61(){
   if(!state.daily) return;
 
@@ -3936,7 +3886,6 @@ function quickMarkExercise(){
 })();
 
 
-/* v62 — update sleep for 20/05 */
 (function patchSleep20Good(){
   if(!state.daily) return;
   if(!state.daily["2026-05-20"]) return;
@@ -3957,7 +3906,6 @@ function quickMarkExercise(){
 })();
 
 
-/* v63 — force correct sleep value for 20/05 */
 (function patchSleep20V63(){
   if(!state.daily) return;
   if(!state.daily["2026-05-20"]) return;
@@ -3973,7 +3921,6 @@ function quickMarkExercise(){
 
 
 
-/* v66 — source-checked data from Excel: Applications + Past Interviews */
 (function patchApplicationsAndInterviewsV66(){
   state.applications = [
   {
@@ -4174,7 +4121,6 @@ function quickMarkExercise(){
 })();
 
 
-/* v67 — restore Diário as detailed rich daily text + habits */
 (function patchRichDiaryV67(){
   if(!state.daily) return;
 
@@ -4258,7 +4204,6 @@ Foi um dia muito focado em ferramentas e organização. Precisa equilibrar melho
 })();
 
 
-/* v68 — calories consumed vs burned */
 (function patchCaloriesV68(){
   if(!state.daily) return;
 
@@ -4294,7 +4239,6 @@ Foi um dia muito focado em ferramentas e organização. Precisa equilibrar melho
 })();
 
 
-/* v71 — preserve selected date and avoid disconnected calendar state */
 (function patchCalendarConnectionV71(){
   if(!state.selectedDate) state.selectedDate = "2026-05-20";
   save();
@@ -4307,7 +4251,6 @@ Foi um dia muito focado em ferramentas e organização. Precisa equilibrar melho
 
 
 
-/* v76 — stable sidebar navigation without jumping */
 function sidebarItemsV76(){
   return [...document.querySelectorAll(".sidebar .nav[data-page]")];
 }
@@ -4406,7 +4349,6 @@ function setupSidebarNavigationV76(){
 setTimeout(setupSidebarNavigationV76, 0);
 
 
-/* v77 — Hoje as focus/action panel, Daily as report */
 (function patchHojeFocusV77(){
   state.focusDay = state.focusDay || {};
   state.focusDay["2026-05-21"] = {
@@ -4429,7 +4371,6 @@ setTimeout(setupSidebarNavigationV76, 0);
 })();
 
 
-/* v78 — Google Calendar events imported */
 (function patchEventsV78(){
   if(state._calendarSyncedFromSheets) return;
   state.events = [
@@ -4482,7 +4423,6 @@ setTimeout(setupSidebarNavigationV76, 0);
 })();
 
 
-/* v86 — add confirmed PSL doctorate ceremony */
 (function patchCeremoniePSLV86(){
   state.events = state.events || [];
 
@@ -4517,7 +4457,6 @@ setTimeout(setupSidebarNavigationV76, 0);
 
 
 
-/* v88 — force Hoje to real current date on load */
 function localTodayISO(){
   const now = new Date();
   const y = now.getFullYear();
@@ -4570,7 +4509,6 @@ function setupMidnightRolloverV88(){
       createEmptyDayV88(now);
       save();
       
-/* v90 — update Screen Time for 2026-05-20 from Digital Wellbeing screenshots */
 (function patchScreenTime20260520V90(){
   state.daily = state.daily || {};
   state.daily["2026-05-20"] = state.daily["2026-05-20"] || {};
@@ -4678,7 +4616,6 @@ forceHojeToRealTodayV88();
 setupMidnightRolloverV88();
 
 
-/* v90 — update Screen Time for 2026-05-20 from Digital Wellbeing screenshots */
 (function patchScreenTime20260520V90(){
   state.daily = state.daily || {};
   state.daily["2026-05-20"] = state.daily["2026-05-20"] || {};
@@ -4781,7 +4718,6 @@ renderPage("home");
 }
 
 
-/* v108 — sleep helpers */
 function parseSleepTimeV108(str){
   str=String(str||"").trim().toLowerCase();
   const m=str.match(/(\d{1,2})(?:h|:)?(\d{2})?/);
@@ -4931,7 +4867,6 @@ function foodKcalRange(d){return foodCaloriesRangeV166(foodInterpretedMealsV166(
 
 
 
-/* v164 — interpret raw Sleep values from Google Sheets before display. */
 function sleepCleanTextV164(value){return String(value||"").replace(/[()]/g,"").replace(/\s+/g," ").trim();}
 function sleepPartV164(text,names){var s=String(text||"");for(var i=0;i<names.length;i++){var re=new RegExp(names[i]+"\\s*:\\s*([^|]+)","i");var m=s.match(re);if(m)return sleepCleanTextV164(m[1]);}return"";}
 function sleepWindowV164(sleep){var combined=[sleep&&sleep.duration,sleep&&sleep.window,sleep&&sleep.quality].join(" | ");var fromPart=sleepPartV164(combined,["Janela","Horario","Horário"]);var raw=fromPart||sleepCleanTextV164(sleep&&sleep.window);if(!raw){var m=combined.match(/(\d{1,2}(?:h|:\d{2})?(?:\d{2})?)\s*(?:-|a|à|→)\s*(\d{1,2}(?:h|:\d{2})?(?:\d{2})?)/i);if(m)raw=m[1]+" - "+m[2];}return sleepCleanTextV164(raw).replace(/\s*(?:→|à|a)\s*/i," - ");}
@@ -4946,12 +4881,10 @@ function sleepBlockImproved(d){d.sleep||={duration:"",window:"",quality:""};var 
     </div>
   </div>`;}
 
-/* v71 — Daily calendar connected to the same selectedDate as all pages */
 function calendarBlock(){
   return renderCalendar();
 }
 
-/* v71 — make sure day changes always refresh the current page */
 function setSelectedDateV71(dateStr){
   state.selectedDate = dateStr;
   save();
@@ -5018,7 +4951,6 @@ function renderDaily(){
   </section>`;
 }
 
-/* v106 — mood display helpers */
 function parseScoreV106(value){
   const s=String(value||"").trim();
   const m=s.match(/(\d+(?:[.,]\d+)?)/);
@@ -5040,7 +4972,6 @@ function moodInfoV106(value){
   if(n>=1.8) return {score:`${n}/5`,emoji:"🟠",label:"Difícil",cls:"mood-hard-v106",note:"Dia mais pesado."};
   return {score:`${n}/5`,emoji:"🔴",label:"Muito difícil",cls:"mood-bad-v106",note:"Dia complicado."};
 }
-/* v164 — interpret Mood/Energia values from Drive before display. */
 function moodNormalizeTextV164(value){var s=String(value||"").trim().toLowerCase();if(s.normalize)s=s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");return s.replace(/\s+/g," ");}
 function moodInfoFromDriveV164(value){var raw=String(value||"").trim();var s=moodNormalizeTextV164(raw);var n=parseScoreV106(raw);if(n!==null){if(n>=4.5)return{score:n+"/5",label:"Muito bom",cls:"mood-good-v106",note:"Valor interpretado do Drive."};if(n>=3.8)return{score:n+"/5",label:"Bom",cls:"mood-good-v106",note:"Valor interpretado do Drive."};if(n>=2.8)return{score:n+"/5",label:"Medio",cls:"mood-medium-v106",note:"Valor interpretado do Drive."};if(n>=1.8)return{score:n+"/5",label:"Baixo",cls:"mood-hard-v106",note:"Valor interpretado do Drive."};return{score:n+"/5",label:"Muito baixo",cls:"mood-bad-v106",note:"Valor interpretado do Drive."};}if(!s)return{score:"-",label:"A completar",cls:"mood-empty-v106",note:"Ainda nao registrado."};if(s.indexOf("ansiedade")>=0&&(s.indexOf("alta")>=0||s.indexOf("media-alta")>=0))return{score:"Alerta",label:raw,cls:"mood-hard-v106",note:"Ansiedade elevada no registro."};if(s.indexOf("medio para bom")>=0||s.indexOf("media-alta")>=0||s.indexOf("medio-alto")>=0)return{score:"Media-alta",label:raw,cls:"mood-good-v106",note:"Entre medio e bom."};if(s==="alta"||s==="high"||s.indexOf("alta")>=0)return{score:"Alta",label:raw,cls:"mood-good-v106",note:"Energia/mood alto."};if(s==="media"||s==="medio"||s==="ok"||s.indexOf("media")>=0||s.indexOf("medio")>=0)return{score:"Media",label:raw,cls:"mood-medium-v106",note:"Registro medio/OK."};if(s==="baixa"||s==="low"||s.indexOf("baixa")>=0)return{score:"Baixa",label:raw,cls:"mood-hard-v106",note:"Energia/mood baixo."};return{score:raw,label:raw,cls:"mood-empty-v106",note:"Texto do Drive sem escala clara."};}
 function moodInfoV106(value){return moodInfoFromDriveV164(value);}
@@ -5108,7 +5039,6 @@ function screenActivationsBlockV90(d){
 }
 
 
-/* v119 — screen notification display helpers */
 function renderNotificationsV119(screen){
   if(!screen || !screen.notifications) return "";
   const n = screen.notifications;
@@ -5193,7 +5123,6 @@ function spendingByFixedCategories(spending){
   });
   return categories;
 }
-/* v164 — Spending visual interpretation from raw Sheet rows only. */
 SPENDING_CATEGORIES_V163={
   "Mercado":{keywords:["mercado","supermercado","groceries","courses","alimentation","carrefour","monoprix","lidl","franprix"],pill:"mercado"},
   "Bares/Restaurantes":{keywords:["bar","bares","restaurante","resto","cafe","café","drink","sortie","jantar","almoco","almoço","cerveja","vinho"],pill:"bares-restaurantes"},
@@ -5222,7 +5151,6 @@ function addSpending(){
   save();renderPage("daily");setTimeout(()=>location.hash="spending",50);
 }
 
-/* v99 — Exercise color helpers */
 function exerciseClassV99(x){
   const txt = `${x.type||""} ${x.name||""}`.toLowerCase();
   if(txt.includes("musculation") || txt.includes("treino") || txt.includes("academia") || txt.includes("perna") || txt.includes("bíceps") || txt.includes("costas") || txt.includes("ombro")) return "exercise-musculation";
@@ -5985,7 +5913,6 @@ function toggleGroup(id){
 
 
 
-/* v60 — update 20/05 exercise: caminhada 1h */
 (function patchWalk20(){
   if(!state.daily) return;
   if(!state.daily["2026-05-20"]) return;
@@ -6006,7 +5933,6 @@ function toggleGroup(id){
 })();
 
 
-/* v61 — add sleep data and job-search updates */
 (function patchSleepAndUpdatesV61(){
   if(!state.daily) return;
 
@@ -6065,7 +5991,6 @@ function toggleGroup(id){
 })();
 
 
-/* v62 — update sleep for 20/05 */
 (function patchSleep20Good(){
   if(!state.daily) return;
   if(!state.daily["2026-05-20"]) return;
@@ -6086,7 +6011,6 @@ function toggleGroup(id){
 })();
 
 
-/* v63 — force correct sleep value for 20/05 */
 (function patchSleep20V63(){
   if(!state.daily) return;
   if(!state.daily["2026-05-20"]) return;
@@ -6102,7 +6026,6 @@ function toggleGroup(id){
 
 
 
-/* v66 — source-checked data from Excel: Applications + Past Interviews */
 (function patchApplicationsAndInterviewsV66(){
   state.applications = [
   {
@@ -6303,7 +6226,6 @@ function toggleGroup(id){
 })();
 
 
-/* v67 — restore Diário as detailed rich daily text + habits */
 (function patchRichDiaryV67(){
   if(!state.daily) return;
 
@@ -6387,7 +6309,6 @@ Foi um dia muito focado em ferramentas e organização. Precisa equilibrar melho
 })();
 
 
-/* v68 — calories consumed vs burned */
 (function patchCaloriesV68(){
   if(!state.daily) return;
 
@@ -6423,7 +6344,6 @@ Foi um dia muito focado em ferramentas e organização. Precisa equilibrar melho
 })();
 
 
-/* v71 — preserve selected date and avoid disconnected calendar state */
 (function patchCalendarConnectionV71(){
   if(!state.selectedDate) state.selectedDate = "2026-05-20";
   save();
@@ -6436,7 +6356,6 @@ Foi um dia muito focado em ferramentas e organização. Precisa equilibrar melho
 
 
 
-/* v76 — stable sidebar navigation without jumping */
 function sidebarItemsV76(){
   return [...document.querySelectorAll(".sidebar .nav[data-page]")];
 }
@@ -6535,7 +6454,6 @@ function setupSidebarNavigationV76(){
 setTimeout(setupSidebarNavigationV76, 0);
 
 
-/* v77 — Hoje as focus/action panel, Daily as report */
 (function patchHojeFocusV77(){
   state.focusDay = state.focusDay || {};
   state.focusDay["2026-05-21"] = {
@@ -6558,7 +6476,6 @@ setTimeout(setupSidebarNavigationV76, 0);
 })();
 
 
-/* v78 — Google Calendar events imported */
 (function patchEventsV78(){
   if(state._calendarSyncedFromSheets) return;
   state.events = [
@@ -6611,7 +6528,6 @@ setTimeout(setupSidebarNavigationV76, 0);
 })();
 
 
-/* v86 — add confirmed PSL doctorate ceremony */
 (function patchCeremoniePSLV86(){
   state.events = state.events || [];
 
@@ -6646,7 +6562,6 @@ setTimeout(setupSidebarNavigationV76, 0);
 
 
 
-/* v88 — force Hoje to real current date on load */
 function localTodayISO(){
   const now = new Date();
   const y = now.getFullYear();
@@ -6699,7 +6614,6 @@ function setupMidnightRolloverV88(){
       createEmptyDayV88(now);
       save();
       
-/* v90 — update Screen Time for 2026-05-20 from Digital Wellbeing screenshots */
 (function patchScreenTime20260520V90(){
   state.daily = state.daily || {};
   state.daily["2026-05-20"] = state.daily["2026-05-20"] || {};
@@ -6807,7 +6721,6 @@ forceHojeToRealTodayV88();
 setupMidnightRolloverV88();
 
 
-/* v90 — update Screen Time for 2026-05-20 from Digital Wellbeing screenshots */
 (function patchScreenTime20260520V90(){
   state.daily = state.daily || {};
   state.daily["2026-05-20"] = state.daily["2026-05-20"] || {};
@@ -6907,7 +6820,6 @@ setupMidnightRolloverV88();
 })();
 
 
-/* v91 — updates added from conversation on 2026-05-21 */
 (function patchToday20260521V91(){
   state.daily = state.daily || {};
 
@@ -7031,7 +6943,6 @@ Dia produtivo, com entrevista realizada, treino concluído e atualização do si
 })();
 
 
-/* v92 — update 21/05 with calories, weight and improved Home priority */
 (function patchV92TasksWeightCalories(){
   state.daily = state.daily || {};
 
@@ -7202,7 +7113,6 @@ function renderHomeTaskCardV92(t){
 }
 
 
-/* v94 — add Past Interviews from Excel into Applications as archived interview experiences */
 (function patchPastInterviewsIntoApplicationsV94(){
   state.applications = state.applications || [];
 
@@ -7474,7 +7384,6 @@ function renderTaskList(){
 }
 
 
-/* v95 — document filters and target companies */
 (function patchCompaniesAndDocsV95(){
   state.companies = state.companies || [
     {
@@ -7722,7 +7631,6 @@ function addCompanyV95(){
 }
 
 
-/* v98 — restore CV/Lettres filters and Empresas-alvo page */
 (function patchV98DocsCompanies(){
   state.docs = state.docs || [];
   if(!state.docs.some(x=>String(x.name||"").toLowerCase().includes("syntetica") && String(x.type||"").toLowerCase()==="cv")){
@@ -7878,7 +7786,6 @@ function renderCompaniesList(){
 }
 
 
-/* v100 — Nestlé opportunity + tomorrow focus Ambition Transition */
 (function patchV100NestleAmbition(){
   state.tasks = state.tasks || [];
   state.applications = state.applications || [];
@@ -7960,7 +7867,6 @@ function renderCompaniesList(){
 })();
 
 
-/* v101 — close 21/05 day: Syntetica interview, Corning sent, tomorrow focus */
 (function patchV101DailyClose(){
   state.daily = state.daily || {};
   state.tasks = state.tasks || [];
@@ -8124,7 +8030,6 @@ Dormi aproximadamente 7h, de 02h30 a 09h30. Mood 4/5, energia 4/5 e foco 4/5. No
 })();
 
 
-/* v102 — lawyer / aide juridictionnelle moved to Waiting */
 (function patchV102LawyerWaiting(){
   state.tasks = state.tasks || {};
   state.daily = state.daily || {};
@@ -8191,7 +8096,6 @@ Dormi aproximadamente 7h, de 02h30 a 09h30. Mood 4/5, energia 4/5 e foco 4/5. No
 })();
 
 
-/* v103 — prepare Hoje page for 22/05 */
 (function patchV103PrepareTomorrow(){
   state.daily = state.daily || {};
   state.focusDay = state.focusDay || {};
@@ -8326,7 +8230,6 @@ A ideia é abrir o dashboard de manhã e já saber o que fazer primeiro, sem gas
 })();
 
 
-/* v104 — fix Home priorities so selected day fully controls the first page */
 (function patchV104TomorrowHomeFixed(){
   state.daily = state.daily || {};
   state.focusDay = state.focusDay || {};
@@ -8457,7 +8360,6 @@ A página Hoje deve servir como painel de início do dia. A prioridade não é f
   save();
 })();
 
-/* v104 — override Home task selection: selected day first, then general tasks only as fallback */
 function homeTodayDataV93(){
   const d = day();
   const selected = state.selectedDate || "2026-05-22";
@@ -8508,7 +8410,6 @@ function homeTodayDataV93(){
 }
 
 
-/* v107 — standardize mood/energy/focus for 19/05 and 21/05 */
 (function patchV107MoodTwoDays(){
   state.daily = state.daily || {};
 
@@ -8558,7 +8459,6 @@ function homeTodayDataV93(){
 })();
 
 
-/* v108 — normalize existing sleep records */
 (function patchV108SleepRecords(){
   state.daily = state.daily || {};
   if(state.daily["2026-05-21"]){
@@ -8572,7 +8472,6 @@ function homeTodayDataV93(){
 })();
 
 
-/* v109 — Screen Time update for 21/05 */
 (function patchV109ScreenTime2105(){
   state.daily = state.daily || {};
   const date = "2026-05-21";
@@ -8630,7 +8529,6 @@ function homeTodayDataV93(){
 })();
 
 
-/* v113 — sort tasks: open priorities first, completed tasks at bottom */
 function isTaskDoneV113(t){
   const s = String(t.status || "").toLowerCase();
   return !!t.done || s.includes("done") || s.includes("completed") || s.includes("archived");
@@ -8769,7 +8667,6 @@ if(typeof homeTodayDataV93 === "function"){
 }
 
 
-/* v114 — Google Calendar event synced manually: MSCA PF Webinar */
 (function patchV114CalendarMSCA(){
   state.events = state.events || [];
 
@@ -8810,7 +8707,6 @@ if(typeof homeTodayDataV93 === "function"){
 })();
 
 
-/* v115 — update 22/05 exercise and food */
 (function patchV115GymFood2205(){
   state.daily = state.daily || {};
 
@@ -8898,7 +8794,6 @@ Antes do treino, comi 3 ovos, tomei café preto e comi um pouco de macarrão com
 })();
 
 
-/* v116 — clean 22/05 diary: only facts explicitly provided by user */
 (function patchV116NoInventedDiary(){
   state.daily = state.daily || {};
 
@@ -8971,7 +8866,6 @@ Depois do treino, almocei na Cité Universitaire: bisteca de porco, lentilha e b
 })();
 
 
-/* v117 — catch-up 23/05 to 25/05: only facts explicitly provided */
 (function patchV117CatchupSocialDays(){
   state.daily = state.daily || {};
   state.tasks = state.tasks || [];
@@ -9155,7 +9049,6 @@ Bebidas: aproximadamente 60 €, ainda a acertar com Jojo.`;
 })();
 
 
-/* v118 — Screen Time from screenshots: 22/05, 23/05, 24/05, 25/05 */
 (function patchV118ScreenTimeCatchup(){
   state.daily = state.daily || {};
 
@@ -9280,7 +9173,6 @@ Bebidas: aproximadamente 60 €, ainda a acertar com Jojo.`;
 })();
 
 
-/* v119 — Notifications from screenshots: 22/05, 23/05, 24/05, 25/05 */
 (function patchV119NotificationsCatchup(){
   state.daily = state.daily || {};
 
@@ -9372,7 +9264,6 @@ Bebidas: aproximadamente 60 €, ainda a acertar com Jojo.`;
 })();
 
 
-/* v120 — defensive page rendering so one broken block does not kill sidebar navigation */
 (function wrapRenderPageV120(){
   if(typeof renderPage !== "function" || renderPage.__wrappedV120) return;
   const original = renderPage;
@@ -9399,7 +9290,6 @@ Bebidas: aproximadamente 60 €, ainda a acertar com Jojo.`;
 
 
 
-/* v121 — set current dashboard date to 26/05 without inventing daily content */
 (function patchV121Today2605(){
   state.daily = state.daily || {};
   state.focusDay = state.focusDay || {};
@@ -9435,7 +9325,6 @@ Bebidas: aproximadamente 60 €, ainda a acertar com Jojo.`;
 })();
 
 
-/* v122 — add today's admin/legal task: lawyer / aide juridictionnelle */
 (function patchV122LawyerJuridictionToday(){
   state.daily = state.daily || {};
   state.focusDay = state.focusDay || {};
@@ -9507,7 +9396,6 @@ Bebidas: aproximadamente 60 €, ainda a acertar com Jojo.`;
 })();
 
 
-/* v123 — add confirmed festival spending on Sunday 24/05 */
 (function patchV123FestivalSpending24(){
   state.daily = state.daily || {};
 
@@ -9586,7 +9474,6 @@ Bebidas: aproximadamente 60 €, ainda a acertar com Jojo.`;
 })();
 
 
-/* v124 — classify 15.60 EUR as market spending today */
 (function patchV124Market1560Today(){
   state.daily = state.daily || {};
   state.tasks = state.tasks || [];
@@ -9646,7 +9533,6 @@ Bebidas: aproximadamente 60 €, ainda a acertar com Jojo.`;
 })();
 
 
-/* v125 — update 26/05 exercise: back/biceps + walking */
 (function patchV125Exercise2605(){
   state.daily = state.daily || {};
 
@@ -9717,7 +9603,6 @@ Bebidas: aproximadamente 60 €, ainda a acertar com Jojo.`;
 
 renderPage("home");
 
-/* v126 — Targets estratégicos: companies, labs, postdocs, trainees, startups */
 (function patchTargetsStrategiquesV126(){
   state.version = "v126";
   state.targetStrategy = {
@@ -9931,7 +9816,6 @@ function renderCompaniesList(){
 
 
 
-/* v129 — Radar estratégico 3D updated from Deep Research report */
 (function patchV127RadarTargets(){
   state.companies = [
   {
@@ -10930,7 +10814,6 @@ function renderCompaniesList(){
 }
 
 
-/* v130 — comprehensive targets database: previous list preserved + Deep Research + cosmetics/chemical career additions */
 (function patchV130ComprehensiveTargets(){
   state.companies = [{"name":"Aptar / Aptar Beauty","type":"Grande empresa / Beauty packaging","role":"Packaging R&D Engineer / Materials Engineer / Product Development Engineer","sector":"Airless · dispensing · beauty packaging","secondary":"Networking LinkedIn · contacts to validate","country":"France / Global","city":"","fit":"9.5","priority":"Very High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Validar LinkedIn de Guillaume Jacques e procurar alumni Chimie ParisTech/PSL.","notes":"Top 1/30. Contatos: Guillaume Jacques; Chengfeng Li; John Ferguson.","source":"","top15":"Top 15"},{"name":"Pierre Fabre","type":"Grande empresa / Dermocosmetics + packaging","role":"Ingénieur Packaging / Packaging R&D / Compatibility Engineer","sector":"Dermo-cosmetics · packaging · product protection","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"9.5","priority":"Very High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar Bérénice Baudin e Julianne E. para networking técnico.","notes":"Top 2/30. Contatos: Bénédicte Roucayrol; Bérénice Baudin; Julianne E..","source":"","top15":"Top 15"},{"name":"Albéa","type":"Grande empresa / Beauty packaging","role":"Packaging R&D Engineer / Materials Engineer / Innovation Packaging","sector":"Beauty packaging · plastics · sustainable packaging","secondary":"Networking LinkedIn · contacts to validate","country":"France / Global","city":"","fit":"9.3","priority":"Very High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Validar perfis LinkedIn e priorizar contato técnico intermediário.","notes":"Top 3/30. Contatos: Cedric Potier; Thierry Maurice; Eric Yoannice Owanga Widah.","source":"","top15":"Top 15"},{"name":"NAOS / Bioderma","type":"Grande empresa / Dermocosmetics","role":"R&D Packaging / Formula & Packaging Development / Packaging Quality","sector":"Dermocosmetics · packaging · preservation","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"9.3","priority":"Very High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar Pauline F. e Christophe Roy; buscar recrutador R&D.","notes":"Top 4/30. Contatos: Marine Roualdes; Christophe Roy; Pauline F..","source":"","top15":"Top 15"},{"name":"L’Oréal Groupe / R&I","type":"Grande empresa / Beauty R&I","role":"Packaging Engineer / Sustainable Packaging / R&I Packaging","sector":"Packaging R&D · sustainable materials · beauty","secondary":"Networking LinkedIn · contacts to validate","country":"France / Global","city":"","fit":"9.2","priority":"Very High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar David Guerin; buscar engenheiros packaging com ligação PSL/Chimie ParisTech.","notes":"Top 5/30. Contatos: Jacques Playe; David Guerin; Jordan Molinié.","source":"","top15":"Top 15"},{"name":"Clarins","type":"Grande empresa / Beauty packaging","role":"Chef de Projet Packaging / Développement Packaging / Packaging Innovation","sector":"Cosmetic packaging · skincare · launch development","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"9.2","priority":"Very High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar Claire Nordstrom-Schuler e Yannick Thuraïsangam.","notes":"Top 6/30. Contatos: Philippe Briand; Claire Nordstrom-Schuler; Yannick Thuraïsangam.","source":"","top15":"Top 15"},{"name":"LVMH Recherche / Dior / Guerlain","type":"Grande empresa / Luxury beauty R&D","role":"Materials Scientist / Packaging Innovation Engineer / Research Engineer","sector":"Luxury beauty · materials · packaging innovation","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"9.1","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Busca fraca: procurar contatos técnicos de packaging innovation e materials.","notes":"Top 7/30. Contatos: Régine Frétard.","source":"","top15":"Top 15"},{"name":"CEA-Liten","type":"Laboratório / Applied research","role":"Ingénieur R&D / Postdoc / Research Engineer","sector":"Sustainable materials · applied R&D · industrial transfer","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"9.0","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Busca fraca: procurar pesquisadores em polímeros/sustainable materials.","notes":"Top 8/30. Contatos: Léa Marty.","source":"","top15":"Top 15"},{"name":"Fraunhofer IVV","type":"Instituto tecnológico / Packaging R&D","role":"Research Scientist / Packaging R&D / Materials Development","sector":"Packaging technologies · materials · recycling","secondary":"Networking LinkedIn · contacts to validate","country":"Germany","city":"","fit":"9.0","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar Cornelia Stramm; manter Swantje para orientação de ecossistema.","notes":"Top 9/30. Contatos: Swantje Eissing; Dr. Cornelia Stramm; Prof. Marek Hauptmann.","source":"","top15":"Top 15"},{"name":"Fraunhofer ICT","type":"Instituto tecnológico / Polymer processing","role":"Polymer Engineer / Recycling Scientist / Process Engineer","sector":"Polymer processing · recycling · applied research","secondary":"Networking LinkedIn · contacts to validate","country":"Germany","city":"","fit":"9.0","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Buscar perfis mais intermediários em polímeros/reciclagem.","notes":"Top 10/30. Contatos: Prof. Frank Henning; Dr. Björn Beck; Dr. Stefan Löbbecke.","source":"","top15":"Top 15"},{"name":"TNO Circular Plastics / R&D Hub","type":"Instituto tecnológico / Circular plastics","role":"Research Scientist / Circular Plastics Engineer / Project Manager","sector":"Circular plastics · polymer recycling · applied R&D","secondary":"Networking LinkedIn · contacts to validate","country":"Netherlands","city":"","fit":"9.0","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar Pieter Imhof para entender o hub e projetos aplicados.","notes":"Top 11/30. Contatos: Pieter Imhof; Hella Koops.","source":"","top15":"Top 15"},{"name":"MSCA Postdoctoral Fellowships","type":"Bolsa / Funding route","role":"Postdoc host / PI / Supervisor","sector":"Postdoc industrial/applied · polymers · packaging","secondary":"Networking LinkedIn · contacts to validate","country":"Europe","city":"","fit":"9.0","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Procurar hosts mais alinhados com polímeros/packaging; não priorizar admins.","notes":"Top 12/30. Contatos: Anita Catapano; Régis Pommier; Bérénice Kimpe.","source":"","top15":"Top 15"},{"name":"Amcor Beauty / Personal Care","type":"Grande empresa / Packaging","role":"R&D Scientist / Packaging Development Engineer / Materials Innovation","sector":"Beauty packaging · dispensing · sustainable packaging","secondary":"Networking LinkedIn · contacts to validate","country":"Europe","city":"","fit":"8.8","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar Kris Buysens; procurar engenheiros R&D em Beauty/Personal Care.","notes":"Top 13/30. Contatos: Kris Buysens; Toon Coppejans.","source":"","top15":"Top 15"},{"name":"CHANEL","type":"Grande empresa / Luxury beauty packaging","role":"Packaging Innovation Engineer / Sustainable Materials / Homologation Packaging","sector":"Luxury beauty · packaging materials · sustainability","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"8.8","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar Nicolas Mathieu e Hélène Villecroze.","notes":"Top 14/30. Contatos: Nicolas Mathieu; Hélène Villecroze; Olivier Pomes.","source":"","top15":"Top 15"},{"name":"Quadpack","type":"Empresa / Beauty packaging","role":"Packaging Development Engineer / Airless Packaging Engineer / Injection Engineer","sector":"Airless · plastics · beauty packaging","secondary":"Networking LinkedIn · contacts to validate","country":"Spain / Europe","city":"","fit":"8.8","priority":"High","status":"Weak search / To recheck","decision":"Dashboard","known":"Top 30 networking targets","next":"Busca fraca: refazer via eventos, Paris Packaging Week, Premium Beauty News.","notes":"Top 15/30. Contatos: Nenhum contato validado.","source":"","top15":"Top 15"},{"name":"IPC","type":"Instituto tecnológico / Plasturgie","role":"Ingénieur R&D / Project Engineer / Plastics recycling","sector":"Plasturgie · polymer processing · technology transfer","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"8.8","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Busca fraca: procurar ingénieurs R&D e project managers, não apenas contato geral.","notes":"Top 16/30. Contatos: Colette Breysse.","source":"","top15":""},{"name":"Syntetica","type":"Startup / Polymer recycling","role":"R&D Engineer / Process Engineer / Polymer Recycling Engineer","sector":"Nylon recycling · polyamide · scale-up","secondary":"Networking LinkedIn · contacts to validate","country":"France / Europe","city":"","fit":"8.8","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Procurar equipe técnica de R&D/scale-up além do CEO.","notes":"Top 17/30. Contatos: Marco Bertone.","source":"","top15":""},{"name":"Coty","type":"Grande empresa / Beauty packaging","role":"R&D Packaging Engineer / Packaging Lab Engineer / Product Development","sector":"Beauty packaging · fragrance/skincare · sustainability","secondary":"Networking LinkedIn · contacts to validate","country":"Europe","city":"","fit":"8.7","priority":"Medium-High","status":"Weak search / To recheck","decision":"Dashboard","known":"Top 30 networking targets","next":"Busca fraca: procurar Gaël Le Bourgès e contatos via LinkedIn/eventos.","notes":"Top 18/30. Contatos: Nenhum contato validado.","source":"","top15":""},{"name":"Arkema","type":"Grande empresa / Specialty polymers","role":"Polymer Scientist / R&D Engineer / Circular Materials Engineer","sector":"Specialty polymers · polyamides · circular materials","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"8.7","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar Stefânia e Thomas por proximidade técnica/cultural.","notes":"Top 19/30. Contatos: Thomas Prenveille; Stefânia Cassiano Gaspar; Nessim Ghamri; Ludivine Bouvier.","source":"","top15":""},{"name":"Groupe Rocher / Yves Rocher","type":"Grande empresa / Beauty packaging","role":"Packaging Development Engineer / Eco-design / Product Development","sector":"Cosmetic packaging · responsible beauty · eco-design","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"8.6","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Priorizar Romain, Damien ou Lucile por maior probabilidade de resposta.","notes":"Top 20/30. Contatos: Bertille Gilles; Romain Dupont; Damien Noc; Lucile Hamon.","source":"","top15":""},{"name":"Carbios","type":"Startup / Scale-up / Enzymatic recycling","role":"R&D Engineer / Polymer Scientist / Process Development","sector":"PET recycling · enzymatic recycling · circular packaging","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"8.6","priority":"High","status":"Contact candidates found","decision":"Dashboard","known":"Top 30 networking targets","next":"Faltam perfis técnicos intermediários; procurar R&D/process engineers.","notes":"Top 21/30. Contatos: Emmanuel Ladent; Alain Marty.","source":"","top15":""},{"name":"EURAXESS","type":"Plataforma / Postdoc route","role":"Postdoc / Research Engineer / Project-linked Researcher","sector":"Postdoc · polymer recycling · materials · packaging","secondary":"Networking LinkedIn · contacts to validate","country":"Europe","city":"","fit":"8.6","priority":"Medium-High","status":"Contact candidates found","decision":"Excel / Monitor","known":"Top 30 networking targets","next":"Usar como canal de ofertas; procurar hosts por tema, não admins.","notes":"Top 22/30. Contatos: Rudinei Fiorio.","source":"","top15":""},{"name":"PIMM Paris","type":"Laboratório / Polymers & composites","role":"Ingénieur de recherche / Postdoc / Polymer Processing Researcher","sector":"Polymer processing · composites · microstructure","secondary":"Networking LinkedIn · contacts to validate","country":"France / Paris","city":"","fit":"8.5","priority":"High","status":"Contact candidates found","decision":"Excel / Monitor","known":"Top 30 networking targets","next":"Priorizar Sébastien Roland e Guillaume Miquelard-Garnier.","notes":"Top 23/30. Contatos: Guillaume Miquelard-Garnier; Sébastien Roland.","source":"","top15":""},{"name":"AIMPLAS","type":"Instituto tecnológico / Plastics","role":"R&D Engineer / Project Engineer / Sustainable packaging researcher","sector":"Plastics · packaging · recycling · biomaterials","secondary":"Networking LinkedIn · contacts to validate","country":"Spain","city":"","fit":"8.5","priority":"High","status":"Contact candidates found","decision":"Excel / Monitor","known":"Top 30 networking targets","next":"Priorizar Rosa González; mapear project managers por packaging/recycling.","notes":"Top 24/30. Contatos: Rosa González; Eva Verdejo; Nuria López.","source":"","top15":""},{"name":"ETH Zürich D-MATL","type":"Universidade / Materials","role":"Postdoc / Polymer Materials Researcher / Sustainable Polymers","sector":"Polymeric materials · chemical recycling · sustainable polymers","secondary":"Networking LinkedIn · contacts to validate","country":"Switzerland","city":"","fit":"8.5","priority":"Medium-High","status":"Contact candidates found","decision":"Excel / Monitor","known":"Top 30 networking targets","next":"Contato muito alto; procurar postdocs/group members antes.","notes":"Top 25/30. Contatos: Prof. Athina Anastasaki.","source":"","top15":""},{"name":"Solvay","type":"Grande empresa / Specialty polymers","role":"Materials Scientist / Polymer R&D Engineer / Circular Materials","sector":"Specialty polymers · sustainable materials · advanced materials","secondary":"Networking LinkedIn · contacts to validate","country":"Europe","city":"","fit":"8.5","priority":"Medium-High","status":"Contact candidates found","decision":"Excel / Monitor","known":"Top 30 networking targets","next":"Validar contatos técnicos na Europa/França; não priorizar se for muito distante.","notes":"Top 26/30. Contatos: Paolo Toniolo; Nicolas Treat (à vérifier).","source":"","top15":""},{"name":"Corning","type":"Grande empresa / Materials science","role":"Chercheur polymères / R&D Scientist / Organic Materials Researcher","sector":"Materials science · organic materials · life sciences","secondary":"Networking LinkedIn · contacts to validate","country":"France / US","city":"","fit":"8.4","priority":"Medium-High","status":"Contact candidates found","decision":"Excel / Monitor","known":"Top 30 networking targets","next":"Faltam contatos França/ECT; buscar Corning Avon-Fontainebleau.","notes":"Top 27/30. Contatos: Aaron Gleason (à vérifier).","source":"","top15":""},{"name":"Roquette Beauté","type":"Beauty ingredients / Application science","role":"Application Scientist / R&D Project Manager / Beauty Science","sector":"Cosmetic ingredients · formulation · product development","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"8.4","priority":"Medium-High","status":"Contact candidates found","decision":"Excel / Monitor","known":"Top 30 networking targets","next":"Complementar com application scientists e equipe técnica do expertise center.","notes":"Top 28/30. Contatos: Bénédicte Courel.","source":"","top15":""},{"name":"CNRS PEPR Recycling","type":"Programa de pesquisa / Recycling","role":"Postdoc / Researcher / Project Coordinator","sector":"Polymer recycling · circular plastics · materials science","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"8.4","priority":"Medium-High","status":"Contact candidates found","decision":"Excel / Monitor","known":"Top 30 networking targets","next":"Priorizar Jannick Duchet-Rumeau/IMP por ligação direta a polímeros.","notes":"Top 29/30. Contatos: Jannick Duchet-Rumeau; Cyril Aymonier.","source":"","top15":""},{"name":"CEA-Iramis / LICSEN","type":"Laboratório / Functional materials","role":"Research Engineer / PI / Functional Polymer Materials","sector":"Functional polymers · nanomaterials · depollution materials","secondary":"Networking LinkedIn · contacts to validate","country":"France","city":"","fit":"8.3","priority":"Medium","status":"Weak search / To recheck","decision":"Excel / Monitor","known":"Top 30 networking targets","next":"Busca fraca: procurar LICSEN group leaders e pesquisadores em polímeros funcionais.","notes":"Top 30/30. Contatos: Nenhum contato validado.","source":"","top15":""}];
   state.targetsVersion = "v138_layout_preserved_targets_light";
@@ -10980,7 +10863,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 
 
 
-/* v142 — safe target tab rendering fix. Layout preserved. Only data filtering/rendering logic updated. */
 (function patchTargetTabsV142(){
   function safeStr(v){ return String(v ?? ""); }
   function safeLower(v){ return safeStr(v).toLowerCase(); }
@@ -11069,7 +10951,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 })();
 
 
-/* v143 — personal dashboard update 26/05 + 27/05. Layout preserved. */
 (function patchV143PersonalUpdate260527(){
   state.daily = state.daily || {};
   state.focusDay = state.focusDay || {};
@@ -11242,7 +11123,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 </script>
 
 <script>
-/* v155 — External Google Sheets data via Apps Script API. Autoload enabled for GitHub Pages + Exercise sync. */
 (function setupExternalDashboardDataV146(){
   const DASHBOARD_API_URL = "https://script.google.com/macros/s/AKfycbxnmf1qqpoS-c7WvHPh-6HMdzbPjiIqEMHc55-ZyY-x4tE7amymSlhCTG1OmBN04DbdNA/exec";
   const DASHBOARD_API_KEY = "pedro-dashboard-2026-secure";
@@ -11459,7 +11339,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 
 
 <script>
-/* v156 — Stable Drive Sync Layer
    Goal: upload this file once to GitHub. After that, routine updates should go to Google Sheets only.
    This layer syncs all daily tabs returned by Apps Script into the dashboard local state. */
 (function stableDriveSyncV156(){
@@ -11677,7 +11556,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 
 
 <script>
-/* v158 — Robust Drive Sync Fix
    Problem fixed: past days were not reliably updated because the front-end only synchronized a few exact sheet names
    and kept old localStorage data when the Apps Script payload used different tab names. This layer keeps the existing
    layout, but makes the Drive sync more tolerant and updates historical dates from the Google Sheets payload. */
@@ -11994,7 +11872,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 
 
 <script>
-/* v161 — Drive Sync Seguro
    Base: versão mais completa anterior.
    Objetivo:
    1) Drive/Apps Script vira fonte principal para dias novos.
@@ -12320,7 +12197,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 </script>
 
 <script>
-/* v162 — Forms visual integration fix
    - Remove Foco from the visual layout until it is collected in Forms.
    - Make Energia accept Baixa/Media/Alta as well as 1-5.
    - Parse Sleep from Daily_Log text like: Qualidade: 4/5 | Duracao: 6h30 | Janela: 3h - 9h30.
