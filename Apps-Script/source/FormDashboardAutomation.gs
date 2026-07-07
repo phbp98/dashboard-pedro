@@ -1,4 +1,4 @@
-﻿ * PEDRO DASHBOARD - Forms to Dashboard automation
+ * PEDRO DASHBOARD - Forms to Dashboard automation
  ************************************************************/
 
 
