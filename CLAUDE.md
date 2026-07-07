@@ -50,9 +50,19 @@ fit score. 4. Bilans p/ a coach. 5. Adaptar CV/cartas por vaga.
 
 Glossário: memory/glossary.md
 
-## Modo Compacto — Economia de Tokens
-Edições de código: **instruções sucintas** reduzem ~40-50% tokens.
-- ✅ "Remove linhas 5196-5219. Commit/push." (barato)
-- ❌ "Deixa eu ler, analisar, remover..." (caro)
+## Modo Compacto — Economia Operante
+**Comportamento padrão agora:**
+- ✅ Respostas 1-2 linhas (sem narrativa)
+- ✅ Sem repetir contexto já estabelecido
+- ✅ Resultado direto: "✅ Feito. Push."
+- ✅ Não criar docs desnecessários (só memory essencial)
+- ✅ Comandos econômicos: grep -n, git --stat, batch edits
 
-Detalhes: memory/feedback_token_economy.md
+Exemplo:
+```
+Você: "Muda spending de 4 pra 7 categorias"
+Eu: "✅ 7 categorias + cores. Push."
+(não: "Deixa eu ler o código, analisar as categorias, modificar...")
+```
+
+Detalhes técnicos: memory/feedback_token_economy.md
