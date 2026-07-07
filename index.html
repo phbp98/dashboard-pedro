@@ -4817,25 +4817,6 @@ function addExercise(){
   });
   save();renderPage(currentPage);setTimeout(()=>location.hash="exercise",50);
 }
-function foodBlockImproved(d){
-  var meals=foodInterpretedMealsV166(d.food||[]);
-  var consumed=kcalRangeLabel(foodCaloriesRangeV166(meals));
-  var rawCount=foodUniqueItemsV166(d.food||[]).length;
-  var mealRows=meals.map(function(x){
-    return '<div class="meal-item"><div><span>'+esc(x.meal)+'</span><div class="meal-note">'+esc(x.items)+'</div><div class="food-raw-v166">Bruto: '+esc(x.raw)+'</div></div><span class="food-kcal-v166">'+esc(x.kcalLabel)+'</span></div>';
-  }).join("");
-  if(!meals.length) mealRows="<div class='empty'>Sem alimentacao registrada.</div>";
-  return '<div class="card block" id="food">'+
-    '<div class="block-head"><h3>Alimentacao</h3><span class="pill">Consumido: '+esc(consumed)+'</span></div>'+
-    '<div class="food-metrics-v166">'+
-      '<div class="food-metric-v166"><small>Refeicoes detectadas</small><b>'+esc(String(meals.length||0))+'</b></div>'+
-      '<div class="food-metric-v166"><small>Calorias estimadas</small><b>'+esc(consumed)+'</b></div>'+
-      '<div class="food-metric-v166"><small>Registros unicos</small><b>'+esc(String(rawCount||0))+'</b></div>'+
-    '</div>'+
-    '<div class="food-improved"><div class="meal-sec"><div class="meal-name">Resumo interpretado</div>'+mealRows+'</div></div>'+
-    '<div class="block-footnote-v97">Calorias sao estimativas heuristicas a partir do texto da planilha. Para CROUS ou pratos completos, usar como ordem de grandeza, nao como valor nutricional exato.</div>'+
-  '</div>';
-}
 function addFood(){
   const d=day();d.food ||= [];
   d.food.push({meal:foodMeal.value||"Refeição",items:foodItems.value||"",calories:foodKcal.value||"",note:""});
