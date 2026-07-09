@@ -1881,25 +1881,26 @@ textarea{min-height:110px;resize:vertical}
 .task-action-v94 button{
   white-space:nowrap;
 }
-.task-del-v94{
-  border-color:rgba(255,139,139,.42) !important;
-  color:#ffd0d0 !important;
-  background:rgba(255,139,139,.08) !important;
-}
-.task-card-v94.done-v94{
-  opacity:.5;
-  border-color:rgba(117,217,130,.30);
-  background:#111318;
-}
-.tasks-clear-v94{
+.task-chips-v166{
   display:flex;
-  justify-content:flex-end;
-  margin-bottom:12px;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:14px;
 }
-.tasks-clear-v94 button{
-  border-color:rgba(255,139,139,.42);
-  color:#ffd0d0;
-  background:rgba(255,139,139,.06);
+.task-chip-v166{
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:7px 13px;
+  font-size:13px;
+  font-weight:800;
+  background:rgba(255,255,255,.03);
+  color:var(--muted);
+  cursor:pointer;
+}
+.task-chip-v166.active{
+  border-color:rgba(143,168,255,.55);
+  background:rgba(143,168,255,.14);
+  color:#d8e2ff;
 }
 .application-history-v94{
   border-color:rgba(177,106,214,.35) !important;
@@ -7030,19 +7031,17 @@ function taskCardV94(t,i){
   const pClass=normPriorityV94(priority);
   const sClass=statusClassV94(status);
 
-  return `<div class="task-card-v94 ${pClass}${sClass==="done"?" done-v94":""}">
+  return `<div class="task-card-v94 ${pClass}">
     <div>
       <div class="task-title-v94">${esc(title)}</div>
       ${detail?`<div class="task-sub-v94">${esc(detail)}</div>`:""}
       <div class="task-tags-v94">
-        <span class="tag-v94 tag-priority-${pClass}-v94">Prioridade: ${esc(priorityLabelV94(priority))}</span>
-        <span class="tag-v94 tag-status-${sClass}-v94">Status: ${esc(status)}</span>
-        <span class="tag-v94 tag-type-v94">Tipo: ${esc(type)}</span>
+        <span class="tag-v94 tag-priority-${pClass}-v94">${esc(priorityLabelV94(priority))}</span>
+        <span class="tag-v94 tag-type-v94">${esc(type)}</span>
       </div>
     </div>
     <div class="task-action-v94">
-      <button onclick="toggleTaskDoneV94(${i})">${sClass==="done"?"Reabrir":"✓ Feito"}</button>
-      <button class="task-del-v94" onclick="deleteTaskV94(${i})" title="Excluir task">🗑</button>
+      <button onclick="toggleTaskDoneV94(${i})">✓ Feito</button>
     </div>
   </div>`;
 }
@@ -7092,14 +7091,14 @@ function toggleTaskDoneV94(index){
   const t=(window.__taskRowsV94||[])[index];
   if(!t) return;
 
-  const isDone = statusClassV94(t.status)==="done";
   if(t.__source==="focus"){
     const task=state.focusDay?.[t.__date]?.tasks?.[t.__index];
-    if(task) task.done=!isDone;
+    if(task) task.done=true;
   }
   const meta=taskMetaV94();
   const key=taskKeyV94(t);
-  meta[key]={...(meta[key]||{}), done:!isDone};
+  /* concluir = sumir da lista (fica registrado no Sheet) */
+  meta[key]={...(meta[key]||{}), done:true, hidden:true};
   save();
   renderTasks();
 }
@@ -7112,16 +7111,19 @@ function deleteTaskV94(index){
   save();
   renderTasks();
 }
-function clearDoneTasksV94(){
-  const meta=taskMetaV94();
-  allTasksV94().forEach(t=>{
-    if(statusClassV94(t.status)==="done"){
-      const key=taskKeyV94(t);
-      meta[key]={...(meta[key]||{}), hidden:true};
-    }
-  });
-  save();
+function setTaskChipV166(v){
+  const q=document.getElementById("taskSearch")?.value||"";
+  window.__taskTypeChipV166=v;
   renderTasks();
+  const inp=document.getElementById("taskSearch");
+  if(inp && q){ inp.value=q; renderTaskList(); }
+}
+function taskTypeChipsV166(){
+  const pending=allTasksV94().filter(t=>statusClassV94(t.status)!=="done");
+  const types=[...new Set(pending.map(t=>inferTaskTypeV94(t)))].sort();
+  const cur=window.__taskTypeChipV166||"";
+  const chip=(val,label)=>`<button class="task-chip-v166${cur===val?" active":""}" onclick="setTaskChipV166('${val.replace(/'/g,"\\'")}')">${esc(label)}</button>`;
+  return chip("","Todas ("+pending.length+")")+types.map(t=>chip(t,t)).join("");
 }
 function taskMatchesV94(t,q,priority,status,type){
   const full=JSON.stringify(t).toLowerCase();
@@ -7140,48 +7142,16 @@ function renderTasks(){
       </div>
     </div>
 
-    <div class="tasks-stats-v94">
-      <div class="metric"><small>Total</small><b>${allTasksV94().length}</b></div>
-      <div class="metric"><small>High/Critical</small><b>${allTasksV94().filter(t=>["critical","high","medium-high"].includes(normPriorityV94(t.priority))).length}</b></div>
-      <div class="metric"><small>To do</small><b>${allTasksV94().filter(t=>statusClassV94(t.status)!=="done").length}</b></div>
-      <div class="metric"><small>Done</small><b>${allTasksV94().filter(t=>statusClassV94(t.status)==="done").length}</b></div>
+    <div class="tasks-stats-v94" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+      <div class="metric"><small>A fazer</small><b>${allTasksV94().filter(t=>statusClassV94(t.status)!=="done").length}</b></div>
+      <div class="metric"><small>High/Critical</small><b>${allTasksV94().filter(t=>statusClassV94(t.status)!=="done"&&["critical","high","medium-high"].includes(normPriorityV94(t.priority))).length}</b></div>
     </div>
 
-    <div class="tasks-toolbar-v94">
+    <div class="tasks-toolbar-v94" style="grid-template-columns:1fr">
       <input id="taskSearch" placeholder="Buscar tarefa..." oninput="renderTaskList()">
-      <select id="taskPriorityFilter" onchange="renderTaskList()">
-        <option value="">Todas prioridades</option>
-        <option value="Critical">Critical</option>
-        <option value="High">High</option>
-        <option value="Medium-High">Medium-High</option>
-        <option value="Medium">Medium</option>
-        <option value="Low">Low</option>
-      </select>
-      <select id="taskStatusFilter" onchange="renderTaskList()">
-        <option value="">Todos status</option>
-        <option value="To do">To do</option>
-        <option value="In progress">In progress</option>
-        <option value="Waiting">Waiting</option>
-        <option value="Done">Done</option>
-        <option value="Completed">Completed</option>
-      </select>
-      <select id="taskTypeFilter" onchange="renderTaskList()">
-        <option value="">Todos tipos</option>
-        <option value="Admin">Admin / Legal</option>
-        <option value="Applications">Applications</option>
-        <option value="Networking">Networking</option>
-        <option value="Learning">Learning</option>
-        <option value="LinkedIn">LinkedIn</option>
-        <option value="Postdoc">Postdoc / Funding</option>
-        <option value="Personal">Personal / Finance</option>
-        <option value="Health">Health</option>
-        <option value="Tools">Tools</option>
-      </select>
     </div>
 
-    <div class="tasks-clear-v94">
-      <button onclick="clearDoneTasksV94()">🗑 Limpar concluídas (${allTasksV94().filter(t=>statusClassV94(t.status)==="done").length})</button>
-    </div>
+    <div class="task-chips-v166">${taskTypeChipsV166()}</div>
 
     <div id="taskList"></div>
   </section>`;
@@ -7191,7 +7161,7 @@ function renderTaskList(){
   const q=document.getElementById("taskSearch")?.value || "";
   const p=document.getElementById("taskPriorityFilter")?.value || "";
   const s=document.getElementById("taskStatusFilter")?.value || "";
-  const ty=document.getElementById("taskTypeFilter")?.value || "";
+  const ty=document.getElementById("taskTypeFilter")?.value || window.__taskTypeChipV166 || "";
 
   const rank = pr => {
     const n=normPriorityV94(pr);
@@ -7203,13 +7173,9 @@ function renderTaskList(){
   };
 
   const rows=allTasksV94()
+    .filter(t=>statusClassV94(t.status)!=="done")
     .filter(t=>taskMatchesV94(t,q,p,s,ty))
-    .sort((a,b)=>{
-      const da=statusClassV94(a.status)==="done"?1:0;
-      const db=statusClassV94(b.status)==="done"?1:0;
-      if(da!==db) return da-db;
-      return rank(a.priority)-rank(b.priority);
-    });
+    .sort((a,b)=>rank(a.priority)-rank(b.priority));
 
   window.__taskRowsV94=rows;
   taskList.innerHTML=rows.map((t,i)=>taskCardV94(t,i)).join("") || `<div class="empty">Nenhuma task encontrada.</div>`;
@@ -8428,14 +8394,14 @@ if(typeof renderTaskList === "function"){
     const q=document.getElementById("taskSearch")?.value || "";
     const p=document.getElementById("taskPriorityFilter")?.value || "";
     const s=document.getElementById("taskStatusFilter")?.value || "";
-    const ty=document.getElementById("taskTypeFilter")?.value || "";
+    const ty=document.getElementById("taskTypeFilter")?.value || window.__taskTypeChipV166 || "";
     const target=document.getElementById("taskList");
     if(!target){
       oldRenderTaskListV113();
       return;
     }
 
-    let rows=normalizeTaskRowsV113();
+    let rows=normalizeTaskRowsV113().filter(t=>!isTaskDoneV113(t));
 
     if(typeof taskMatchesV94 === "function"){
       rows=rows.filter(t=>taskMatchesV94(t,q,p,s,ty));
