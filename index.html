@@ -1880,6 +1880,26 @@ textarea{min-height:110px;resize:vertical}
 .task-action-v94 button{
   white-space:nowrap;
 }
+.task-del-v94{
+  border-color:rgba(255,139,139,.42) !important;
+  color:#ffd0d0 !important;
+  background:rgba(255,139,139,.08) !important;
+}
+.task-card-v94.done-v94{
+  opacity:.5;
+  border-color:rgba(117,217,130,.30);
+  background:#111318;
+}
+.tasks-clear-v94{
+  display:flex;
+  justify-content:flex-end;
+  margin-bottom:12px;
+}
+.tasks-clear-v94 button{
+  border-color:rgba(255,139,139,.42);
+  color:#ffd0d0;
+  background:rgba(255,139,139,.06);
+}
 .application-history-v94{
   border-color:rgba(177,106,214,.35) !important;
 }
@@ -6826,7 +6846,7 @@ function taskCardV94(t,i){
   const pClass=normPriorityV94(priority);
   const sClass=statusClassV94(status);
 
-  return `<div class="task-card-v94 ${pClass}">
+  return `<div class="task-card-v94 ${pClass}${sClass==="done"?" done-v94":""}">
     <div>
       <div class="task-title-v94">${esc(title)}</div>
       ${detail?`<div class="task-sub-v94">${esc(detail)}</div>`:""}
@@ -6837,9 +6857,31 @@ function taskCardV94(t,i){
       </div>
     </div>
     <div class="task-action-v94">
-      <button onclick="toggleTaskDoneV94(${i})">${sClass==="done"?"Reabrir":"Feito"}</button>
+      <button onclick="toggleTaskDoneV94(${i})">${sClass==="done"?"Reabrir":"✓ Feito"}</button>
+      <button class="task-del-v94" onclick="deleteTaskV94(${i})" title="Excluir task">🗑</button>
     </div>
   </div>`;
+}
+function taskKeyV94(t){
+  return String(t.title || t.text || "").toLowerCase().trim();
+}
+function taskMetaV94(){
+  state.taskMeta = state.taskMeta || {};
+  return state.taskMeta;
+}
+/* Aplica overrides locais (done/hidden) que sobrevivem ao sync do Sheet */
+function applyTaskMetaV94(rows){
+  const meta=taskMetaV94();
+  return rows
+    .filter(t=>!(meta[taskKeyV94(t)]||{}).hidden)
+    .map(t=>{
+      const m=meta[taskKeyV94(t)];
+      if(m && typeof m.done==="boolean"){
+        t.status = m.done ? "Done" : "To do";
+        t.done = m.done;
+      }
+      return t;
+    });
 }
 function allTasksV94(){
   const general=(state.tasks||[]).map((t,i)=>({
@@ -6860,23 +6902,40 @@ function allTasksV94(){
     }))
   );
 
-  return [...focus, ...general];
+  return applyTaskMetaV94([...focus, ...general]);
 }
 function toggleTaskDoneV94(index){
-  const rows=allTasksV94();
-  const t=rows[index];
+  const t=(window.__taskRowsV94||[])[index];
   if(!t) return;
 
+  const isDone = statusClassV94(t.status)==="done";
   if(t.__source==="focus"){
     const task=state.focusDay?.[t.__date]?.tasks?.[t.__index];
-    if(task) task.done=!task.done;
-  }else{
-    const task=state.tasks?.[t.__index];
-    if(task){
-      const s=String(task.status||"").toLowerCase();
-      task.status = (s.includes("done") || s.includes("completed")) ? "To do" : "Completed";
-    }
+    if(task) task.done=!isDone;
   }
+  const meta=taskMetaV94();
+  const key=taskKeyV94(t);
+  meta[key]={...(meta[key]||{}), done:!isDone};
+  save();
+  renderTasks();
+}
+function deleteTaskV94(index){
+  const t=(window.__taskRowsV94||[])[index];
+  if(!t) return;
+  const meta=taskMetaV94();
+  const key=taskKeyV94(t);
+  meta[key]={...(meta[key]||{}), hidden:true};
+  save();
+  renderTasks();
+}
+function clearDoneTasksV94(){
+  const meta=taskMetaV94();
+  allTasksV94().forEach(t=>{
+    if(statusClassV94(t.status)==="done"){
+      const key=taskKeyV94(t);
+      meta[key]={...(meta[key]||{}), hidden:true};
+    }
+  });
   save();
   renderTasks();
 }
@@ -6936,6 +6995,10 @@ function renderTasks(){
       </select>
     </div>
 
+    <div class="tasks-clear-v94">
+      <button onclick="clearDoneTasksV94()">🗑 Limpar concluídas (${allTasksV94().filter(t=>statusClassV94(t.status)==="done").length})</button>
+    </div>
+
     <div id="taskList"></div>
   </section>`;
   renderTaskList();
@@ -6957,9 +7020,15 @@ function renderTaskList(){
 
   const rows=allTasksV94()
     .filter(t=>taskMatchesV94(t,q,p,s,ty))
-    .sort((a,b)=>rank(a.priority)-rank(b.priority));
+    .sort((a,b)=>{
+      const da=statusClassV94(a.status)==="done"?1:0;
+      const db=statusClassV94(b.status)==="done"?1:0;
+      if(da!==db) return da-db;
+      return rank(a.priority)-rank(b.priority);
+    });
 
-  taskList.innerHTML=rows.map((t,i)=>taskCardV94(t, allTasksV94().indexOf(t))).join("") || `<div class="empty">Nenhuma task encontrada.</div>`;
+  window.__taskRowsV94=rows;
+  taskList.innerHTML=rows.map((t,i)=>taskCardV94(t,i)).join("") || `<div class="empty">Nenhuma task encontrada.</div>`;
 }
 
 
@@ -8161,9 +8230,11 @@ function normalizeTaskRowsV113(){
     });
   });
 
-  return rows
-    .filter((t,idx,arr)=>arr.findIndex(x=>String(x.title)===String(t.title))===idx)
-    .sort(taskSortV113);
+  const deduped = rows
+    .filter((t,idx,arr)=>arr.findIndex(x=>String(x.title)===String(t.title))===idx);
+
+  const withMeta = (typeof applyTaskMetaV94 === "function") ? applyTaskMetaV94(deduped) : deduped;
+  return withMeta.sort(taskSortV113);
 }
 
 /* Override task list rendering when the visual v94 task page exists */
@@ -8189,6 +8260,7 @@ if(typeof renderTaskList === "function"){
       rows=rows.filter(fullMatch);
     }
 
+    window.__taskRowsV94=rows;
     target.innerHTML=rows.map((t,i)=>{
       if(typeof taskCardV94 === "function") return taskCardV94(t, i);
       return `<div class="entry ${isTaskDoneV113(t)?'done':''}">
