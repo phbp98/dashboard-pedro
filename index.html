@@ -4840,6 +4840,192 @@ function addFood(){
   d.food.push({meal:foodMeal.value||"Refeição",items:foodItems.value||"",calories:foodKcal.value||"",note:""});
   save();renderPage("daily");setTimeout(()=>location.hash="food",50);
 }
+/* v71 — make sure day changes always refresh the current page */
+function setSelectedDateV71(dateStr){
+  state.selectedDate = dateStr;
+  save();
+  renderPage(currentPage);
+}
+
+function renderDaily(){
+  const d=day();
+  const exerciseDone=(d.exercise||[]).some(x=>x.done);
+  const focus=(d.screen?.apps||[]).find(a=>a.focus)||(d.screen?.apps||[])[0];
+
+  app.innerHTML=`<section class="section">
+    <div class="page-head">
+      <div>
+        <h2>⚡ Daily</h2>
+        <div class="small">${formatDate(state.selectedDate)}</div>
+        
+      </div>
+    </div>
+
+    <div class="daily-two-rows-v69">
+      <div class="daily-top-row-v69">
+        <div class="calendar-wrap-v69">
+          ${renderCalendar()}
+        </div>
+
+        <div class="daily-top-block-v69 card">
+          <div class="daily-summary-grid-v69">
+            <div class="daily-summary-card"><h3>🙂 Mood</h3><p>${esc(d.mood||"Não registrado")}</p></div>
+            <div class="daily-summary-card"><h3>😴 Sono</h3><p>${esc(d.sleep?.duration||"Não registrado")}</p></div>
+            <div class="daily-summary-card"><h3>🏃 Exercício</h3><p>${exerciseDone?"Atividade feita":"Pendente / não feito"} · ${kcalRangeLabel(exerciseKcalRange(d))}</p></div>
+            <div class="daily-summary-card"><h3>🍽️ Alimentação</h3><p>${kcalRangeLabel(foodKcalRange(d))}</p></div>
+            <div class="daily-summary-card"><h3>💵 Gastos</h3><p>${moneyTotal(d).toFixed(2)} €</p></div>
+            <div class="daily-summary-card"><h3>📱 Screen</h3><p>${esc(focus?`${focus.name} · ${focus.time}`:"Sem detalhe")}</p></div>
+          </div>
+
+          <div class="daily-note-v69">
+            <h3>📌 Diário</h3>
+            <p>${esc((d.journal||"Sem nota do dia.").slice(0,220))}${(d.journal||"").length>220?"...":""}</p>
+            <div style="height:10px"></div>
+            <button onclick="renderPage('diario')">Abrir diário completo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="daily-bottom-block-v69 card">
+        <div class="jump-bar daily-jump-top-v69">
+          <a class="btn" href="#mood">Mood</a>
+          <a class="btn" href="#sleep">Sono</a>
+          <a class="btn" href="#screen">Screen</a>
+          <a class="btn" href="#spending">Spending</a>
+          <a class="btn" href="#exercise">Exercício</a>
+          <a class="btn" href="#food">Alimentação</a>
+        </div>
+
+        ${moodBlock(d)}
+        ${sleepBlockImproved(d)}
+        ${screenBlock(d)}
+        ${spendingBlockImproved(d)}
+        ${exerciseBlock(d)}
+        ${foodBlockImproved(d)}
+      </div>
+    </div>
+  </section>`;
+}
+
+/* v106 — mood display helpers */
+function parseScoreV106(value){
+  const s=String(value||"").trim();
+  const m=s.match(/(\d+(?:[.,]\d+)?)/);
+  if(!m) return null;
+  const n=parseFloat(m[1].replace(",","."));
+  if(Number.isNaN(n)) return null;
+  return Math.max(1, Math.min(5, n));
+}
+function moodInfoV106(value){
+  const s=String(value||"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  if(s==="alta"||s==="high") return {score:"Alta",emoji:"🟢",label:"Alta",cls:"mood-good-v106",note:"Energia alta."};
+  if(s==="media"||s==="medio"||s==="media-alta"||s==="ok") return {score:"Média",emoji:"🟡",label:"Média",cls:"mood-medium-v106",note:"Energia média."};
+  if(s==="baixa"||s==="low") return {score:"Baixa",emoji:"🟠",label:"Baixa",cls:"mood-hard-v106",note:"Energia baixa."};
+  const n=parseScoreV106(value);
+  if(n===null) return {score:"—",emoji:"⚪",label:"À compléter",cls:"mood-empty-v106",note:"Ainda não registrado."};
+  if(n>=4.5) return {score:`${n}/5`,emoji:"🟢",label:"Muito bom",cls:"mood-good-v106",note:"Dia muito positivo."};
+  if(n>=3.8) return {score:`${n}/5`,emoji:"🟢",label:"Bom",cls:"mood-good-v106",note:"Bom dia no geral."};
+  if(n>=2.8) return {score:`${n}/5`,emoji:"🟡",label:"Médio",cls:"mood-medium-v106",note:"Dia morno / regular."};
+  if(n>=1.8) return {score:`${n}/5`,emoji:"🟠",label:"Difícil",cls:"mood-hard-v106",note:"Dia mais pesado."};
+  return {score:`${n}/5`,emoji:"🔴",label:"Muito difícil",cls:"mood-bad-v106",note:"Dia complicado."};
+}
+/* v164 — interpret Mood/Energia values from Drive before display. */
+function moodNormalizeTextV164(value){var s=String(value||"").trim().toLowerCase();if(s.normalize)s=s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");return s.replace(/\s+/g," ");}
+function moodInfoFromDriveV164(value){var raw=String(value||"").trim();var s=moodNormalizeTextV164(raw);var n=parseScoreV106(raw);if(n!==null){if(n>=4.5)return{score:n+"/5",label:"Muito bom",cls:"mood-good-v106",note:"Valor interpretado do Drive."};if(n>=3.8)return{score:n+"/5",label:"Bom",cls:"mood-good-v106",note:"Valor interpretado do Drive."};if(n>=2.8)return{score:n+"/5",label:"Medio",cls:"mood-medium-v106",note:"Valor interpretado do Drive."};if(n>=1.8)return{score:n+"/5",label:"Baixo",cls:"mood-hard-v106",note:"Valor interpretado do Drive."};return{score:n+"/5",label:"Muito baixo",cls:"mood-bad-v106",note:"Valor interpretado do Drive."};}if(!s)return{score:"-",label:"A completar",cls:"mood-empty-v106",note:"Ainda nao registrado."};if(s.indexOf("ansiedade")>=0&&(s.indexOf("alta")>=0||s.indexOf("media-alta")>=0))return{score:"Alerta",label:raw,cls:"mood-hard-v106",note:"Ansiedade elevada no registro."};if(s.indexOf("medio para bom")>=0||s.indexOf("media-alta")>=0||s.indexOf("medio-alto")>=0)return{score:"Media-alta",label:raw,cls:"mood-good-v106",note:"Entre medio e bom."};if(s==="alta"||s==="high"||s.indexOf("alta")>=0)return{score:"Alta",label:raw,cls:"mood-good-v106",note:"Energia/mood alto."};if(s==="media"||s==="medio"||s==="ok"||s.indexOf("media")>=0||s.indexOf("medio")>=0)return{score:"Media",label:raw,cls:"mood-medium-v106",note:"Registro medio/OK."};if(s==="baixa"||s==="low"||s.indexOf("baixa")>=0)return{score:"Baixa",label:raw,cls:"mood-hard-v106",note:"Energia/mood baixo."};return{score:raw,label:raw,cls:"mood-empty-v106",note:"Texto do Drive sem escala clara."};}
+function moodInfoV106(value){return moodInfoFromDriveV164(value);}
+function renderMoodMetricV106(title,value){
+  const info=moodInfoV106(value);
+  return `<div class="mood-card-v106 ${info.cls}">
+    <small>${esc(title)}</small>
+    <div class="mood-line-v106">
+      <span class="mood-dot-v106"></span>
+      <span class="mood-label-v106">${esc(info.score)}</span>
+    </div>
+    <div class="mood-note-v106">${esc(info.label)} · ${esc(info.note)}</div>
+  </div>`;
+}
+
+function moodBlock(d){
+  return `<div class="card block" id="mood">
+    <div class="block-head"><h3>🙂 Mood</h3></div>
+    <div class="mood-grid-v106">
+      ${renderMoodMetricV106("Mood", d.mood)}
+      ${renderMoodMetricV106("Energia", d.energy)}
+    </div>
+  </div>`;
+}
+function aggregateApps(apps){
+  apps=(apps||[]).map(a=>({...a,min:parseMin(a.time)})).filter(a=>a.min>0).sort((a,b)=>b.min-a.min);
+  const total=apps.reduce((s,a)=>s+a.min,0)||1;
+  const visible=[],small=[];
+  apps.forEach(a=>{
+    if(a.min/total>=0.08||a.focus)visible.push(a);else small.push(a);
+  });
+  if(small.length)visible.push({name:"Todos",time:fmtMin(small.reduce((s,a)=>s+a.min,0)),min:small.reduce((s,a)=>s+a.min,0),details:small});
+  return {apps:visible,total};
+}
+function renderDonut(screen){
+  const grouped=aggregateApps(screen.apps||[]);
+  const apps=grouped.apps;
+  if(!apps.length)return `<div class="empty">Sem apps detalhados para este dia.</div>`;
+  const colors=["#5f8ff5","#ef5a4f","#f1c40f","#2eb67d","#b16ad6","#2db7c4","#999"];
+  let acc=0;
+  const gradient=apps.map((a,i)=>{
+    const start=acc/grouped.total*360;
+    acc+=a.min;
+    const end=acc/grouped.total*360;
+    return `${colors[i%colors.length]} ${start}deg ${end}deg`;
+  }).join(",");
+  return `<div class="donut-wrap">
+    <div class="donut" style="background:conic-gradient(${gradient})"><div class="donut-center"><small>Hoje</small><b>${esc(screen.total||"—")}</b></div></div>
+    <div class="legend">${apps.map((a,i)=>`<div class="legend-row">
+      <span class="legend-left"><span class="dot" style="background:${colors[i%colors.length]}"></span><b>${esc(a.name)}</b></span>
+      <span>${esc(a.time)} · ${Math.round(a.min/grouped.total*100)}%</span>
+    </div>`).join("")}</div>
+  </div>`;
+}
+
+function screenActivationsBlockV90(d){
+  const acts = d.screen?.activations;
+  if(!acts || !acts.apps || !acts.apps.length) return "";
+  return `<div class="card screen-activations-v90">
+    <div class="block-head"><h3>🔓 Ativações / desbloqueios</h3><span class="pill">${esc(acts.total || d.screen?.unlocks || "—")} desbloqueios</span></div>
+    <div class="activation-grid-v90">
+      ${acts.apps.map(a=>`<div class="activation-row-v90"><span>${esc(a.name)}</span><b>${esc(a.count)}</b></div>`).join("")}
+    </div>
+  </div>`;
+}
+
+
+/* v119 — screen notification display helpers */
+function renderNotificationsV119(screen){
+  if(!screen || !screen.notifications) return "";
+  const n = screen.notifications;
+  const rows = (n.apps || []).map(x => `<span class="pill">${esc(x.name)}: ${esc(x.count)}</span>`).join("");
+  return `<div class="view-metric-v97" style="margin-top:10px">
+    <small>Notificações</small>
+    <b>${esc(n.total || "—")}</b>
+    <p style="margin-top:8px">${rows || "Sem detalhe por app."}</p>
+  </div>`;
+}
+
+function screenBlock(d){
+  d.screen ||= {total:"",unlocks:"",apps:[]};
+  const focus=(d.screen.apps||[]).find(a=>a.focus)||(d.screen.apps||[])[0];
+  const total=(d.screen.apps||[]).reduce((s,a)=>s+parseMin(a.time),0);
+  const share=focus&&total?Math.round(parseMin(focus.time)/total*100)+"%":"—";
+  return `<div class="card block" id="screen">
+    <div class="block-head"><h3>📱 Screen Time</h3></div>
+    ${renderDonut(d.screen)}
+    <div class="grid grid-3">
+      <div class="view-metric-v97"><small>${esc(focus?.name||"App foco")}</small><b>${esc(focus?.time||"—")}</b></div>
+      <div class="view-metric-v97"><small>Parte do total</small><b>${share}</b></div>
+      <div class="view-metric-v97"><small>Desbloqueios</small><b>${esc(d.screen.unlocks||"—")}</b></div>
+    </div>
+    ${renderNotificationsV119(d.screen)}
+  </div>`;
+}
+
 function renderDiario(){
   const d=day();
   d.habitsNotes ||= [];
