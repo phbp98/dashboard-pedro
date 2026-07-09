@@ -6985,17 +6985,34 @@ function renderHomeTaskCardV92(t){
 })();
 
 function inferTaskTypeV94(t){
+  /* categoria do Sheet manda; keywords só como fallback */
+  const sheetType=String(t&&t.type||"").trim();
+  if(sheetType && sheetType.toLowerCase()!=="task") return sheetType;
   const txt = JSON.stringify(t||{}).toLowerCase();
-  if(txt.includes("advogado") || txt.includes("juridictionnelle") || txt.includes("legal")) return "Admin / Legal";
-  if(txt.includes("candidatura") || txt.includes("lactalis") || txt.includes("valorplast") || txt.includes("cv")) return "Applications";
-  if(txt.includes("luiz") || txt.includes("luisa") || txt.includes("morvan") || txt.includes("alumni") || txt.includes("network")) return "Networking";
-  if(txt.includes("curso") || txt.includes("linkedin premium") || txt.includes("coursera")) return "Learning";
-  if(txt.includes("post linkedin")) return "LinkedIn";
-  if(txt.includes("postdoc") || txt.includes("bolsa")) return "Postdoc / Funding";
-  if(txt.includes("icloud") || txt.includes("mercado") || txt.includes("free")) return "Personal / Finance";
-  if(txt.includes("exercício") || txt.includes("atividade física") || txt.includes("academia")) return "Health";
-  if(txt.includes("dashboard") || txt.includes("chatgpt") || txt.includes("ferramenta")) return "Tools";
-  return t.type || "Task geral";
+  if(txt.includes("advogado") || txt.includes("juridictionnelle") || txt.includes("legal")) return "Admin/Legal";
+  if(txt.includes("candidatura") || txt.includes("cv") || txt.includes("network") || txt.includes("linkedin") || txt.includes("vaga")) return "Job Search";
+  if(txt.includes("exercício") || txt.includes("atividade física") || txt.includes("academia")) return "Personal / Saúde";
+  if(txt.includes("dashboard") || txt.includes("claude") || txt.includes("ferramenta")) return "Tools";
+  return "Task geral";
+}
+/* cores por grupo de categoria */
+function taskCatColorV167(type){
+  const t=String(type||"").toLowerCase();
+  if(t.includes("job")||t.includes("application")||t.includes("networking")||t.includes("linkedin")) return {color:"#8fa8ff",bg:"rgba(143,168,255,.14)"};
+  if(t.includes("daily")) return {color:"#f1c40f",bg:"rgba(241,196,15,.12)"};
+  if(t.includes("personal")||t.includes("casa")||t.includes("saude")||t.includes("saúde")||t.includes("reflex")||t.includes("finance")) return {color:"#75d982",bg:"rgba(117,217,130,.12)"};
+  if(t.includes("admin")||t.includes("legal")) return {color:"#b16ad6",bg:"rgba(177,106,214,.14)"};
+  if(t.includes("volunteer")) return {color:"#ff9f43",bg:"rgba(255,159,67,.12)"};
+  return {color:"#a9afbd",bg:"rgba(169,175,189,.12)"};
+}
+function taskEffortLabelV167(effort){
+  const e=String(effort||"").toLowerCase();
+  if(!e) return "";
+  if(e.includes("quick")||e.includes("rapid")||e.includes("rápid")) return "⚡ ~15 min";
+  if(e.includes("medium")||e.includes("médio")||e.includes("medio")) return "⏱ ~1h";
+  if(e.includes("long")||e.includes("high")) return "⏳ longa";
+  if(e.includes("low")) return "⚡ leve";
+  return "⏱ "+effort;
 }
 function normPriorityV94(p){
   p=String(p||"").toLowerCase();
@@ -7031,13 +7048,16 @@ function taskCardV94(t,i){
   const pClass=normPriorityV94(priority);
   const sClass=statusClassV94(status);
 
-  return `<div class="task-card-v94 ${pClass}">
+  const cat=taskCatColorV167(type);
+  const effortLabel=taskEffortLabelV167(t.effort);
+  return `<div class="task-card-v94 ${pClass}" style="border-left:4px solid ${cat.color}">
     <div>
       <div class="task-title-v94">${esc(title)}</div>
       ${detail?`<div class="task-sub-v94">${esc(detail)}</div>`:""}
       <div class="task-tags-v94">
         <span class="tag-v94 tag-priority-${pClass}-v94">${esc(priorityLabelV94(priority))}</span>
-        <span class="tag-v94 tag-type-v94">${esc(type)}</span>
+        <span class="tag-v94" style="color:${cat.color};background:${cat.bg};border-color:${cat.color}">${esc(type)}</span>
+        ${effortLabel?`<span class="tag-v94 tag-type-v94">${esc(effortLabel)}</span>`:""}
       </div>
     </div>
     <div class="task-action-v94">
@@ -7122,7 +7142,11 @@ function taskTypeChipsV166(){
   const pending=allTasksV94().filter(t=>statusClassV94(t.status)!=="done");
   const types=[...new Set(pending.map(t=>inferTaskTypeV94(t)))].sort();
   const cur=window.__taskTypeChipV166||"";
-  const chip=(val,label)=>`<button class="task-chip-v166${cur===val?" active":""}" onclick="setTaskChipV166('${val.replace(/'/g,"\\'")}')">${esc(label)}</button>`;
+  const chip=(val,label)=>{
+    const c=val?taskCatColorV167(val):null;
+    const style=c&&cur===val?` style="border-color:${c.color};background:${c.bg};color:${c.color}"`:(c?` style="color:${c.color}"`:"");
+    return `<button class="task-chip-v166${cur===val?" active":""}"${style} onclick="setTaskChipV166('${val.replace(/'/g,"\\'")}')">${esc(label)}</button>`;
+  };
   return chip("","Todas ("+pending.length+")")+types.map(t=>chip(t,t)).join("");
 }
 function taskMatchesV94(t,q,priority,status,type){
@@ -8346,6 +8370,13 @@ function taskSortV113(a,b){
   if(ad !== bd) return ad - bd; // open first, done last
   const pr = priorityRankV113(a.priority) - priorityRankV113(b.priority);
   if(pr !== 0) return pr;
+  /* mesma prioridade: Job Search primeiro, depois ação rápida primeiro */
+  const jobRank = t => /job|application|networking|linkedin/i.test(String(t.type||"")) ? 0 : 1;
+  const jr = jobRank(a) - jobRank(b);
+  if(jr !== 0) return jr;
+  const quickRank = t => /quick|rapid|rápid/i.test(String(t.effort||"")) ? 0 : 1;
+  const qr = quickRank(a) - quickRank(b);
+  if(qr !== 0) return qr;
   return String(a.title || a.text || "").localeCompare(String(b.title || b.text || ""));
 }
 function normalizeTaskRowsV113(){
@@ -11286,6 +11317,7 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
       priority: pick(row,["Priority","Prioridade"],"Medium"),
       status: pick(row,["Status"],"To do"),
       type: pick(row,["Type","Categoria","Category"],"Task"),
+      effort: pick(row,["Effort","Esforço","Esforco"]),
       followup: pick(row,["Next Action","Follow-up","Notes","Notas"]),
       due: normalizeDate(pick(row,["Due","Date","Data","Deadline"]))
     })).filter(x=>x.title);
@@ -11885,6 +11917,7 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
       priority: pick(row,["Priority","Prioridade"],"Medium"),
       status: pick(row,["Status"],"To do"),
       type: pick(row,["Type","Categoria","Category"],"Task"),
+      effort: pick(row,["Effort","Esforço","Esforco"]),
       followup: pick(row,["Next Action","Follow-up","Notes","Notas","Próxima ação"]),
       due: normalizeDate(pick(row,["Due","Date","Data","Deadline"]))
     })).filter(x=>nonEmpty(x.title));
