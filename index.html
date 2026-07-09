@@ -6984,26 +6984,30 @@ function renderHomeTaskCardV92(t){
   save();
 })();
 
+/* categorias fixas e úteis; classificação por type do Sheet e, se não bater, pelo texto da task */
+var TASK_CATEGORIES_V168={
+  "Job Search":{color:"#8fa8ff",bg:"rgba(143,168,255,.14)",keywords:["job","application","networking","linkedin","volunteer","interview","candidatura","vaga","cv","psl","recrut","relance","coach","entrevista"]},
+  "Foco do dia":{color:"#f1c40f",bg:"rgba(241,196,15,.12)",keywords:["daily focus","daily","foco"]},
+  "Saúde":{color:"#ff8b8b",bg:"rgba(255,139,139,.12)",keywords:["saude","saúde","health","medico","médico","rdv","academia","exerc","varizes","dentista"]},
+  "Casa & Compras":{color:"#75d982",bg:"rgba(117,217,130,.12)",keywords:["casa","mercado","compra","roupa","vinted","lampada","lâmpada","limpeza","lavar"]},
+  "Admin & Finanças":{color:"#b16ad6",bg:"rgba(177,106,214,.14)",keywords:["admin","legal","advogado","juridic","icloud","assinatura","banco","finance","imposto","visto","titre","seguro"]},
+  "Lazer":{color:"#ff9f43",bg:"rgba(255,159,67,.12)",keywords:["lazer","jogo","filme","viagem","festa","copa","cinema"]},
+  "Outros":{color:"#a9afbd",bg:"rgba(169,175,189,.12)",keywords:[]}
+};
 function inferTaskTypeV94(t){
-  /* categoria do Sheet manda; keywords só como fallback */
-  const sheetType=String(t&&t.type||"").trim();
-  if(sheetType && sheetType.toLowerCase()!=="task") return sheetType;
-  const txt = JSON.stringify(t||{}).toLowerCase();
-  if(txt.includes("advogado") || txt.includes("juridictionnelle") || txt.includes("legal")) return "Admin/Legal";
-  if(txt.includes("candidatura") || txt.includes("cv") || txt.includes("network") || txt.includes("linkedin") || txt.includes("vaga")) return "Job Search";
-  if(txt.includes("exercício") || txt.includes("atividade física") || txt.includes("academia")) return "Personal / Saúde";
-  if(txt.includes("dashboard") || txt.includes("claude") || txt.includes("ferramenta")) return "Tools";
-  return "Task geral";
+  const cats=Object.keys(TASK_CATEGORIES_V168);
+  const typeTxt=String(t&&t.type||"").toLowerCase();
+  for(const c of cats){
+    if(TASK_CATEGORIES_V168[c].keywords.some(k=>typeTxt.includes(k))) return c;
+  }
+  const full=(String(t&&t.title||t&&t.text||"")+" "+String(t&&t.followup||"")+" "+String(t&&t.detail||"")).toLowerCase();
+  for(const c of cats){
+    if(TASK_CATEGORIES_V168[c].keywords.some(k=>full.includes(k))) return c;
+  }
+  return "Outros";
 }
-/* cores por grupo de categoria */
 function taskCatColorV167(type){
-  const t=String(type||"").toLowerCase();
-  if(t.includes("job")||t.includes("application")||t.includes("networking")||t.includes("linkedin")) return {color:"#8fa8ff",bg:"rgba(143,168,255,.14)"};
-  if(t.includes("daily")) return {color:"#f1c40f",bg:"rgba(241,196,15,.12)"};
-  if(t.includes("personal")||t.includes("casa")||t.includes("saude")||t.includes("saúde")||t.includes("reflex")||t.includes("finance")) return {color:"#75d982",bg:"rgba(117,217,130,.12)"};
-  if(t.includes("admin")||t.includes("legal")) return {color:"#b16ad6",bg:"rgba(177,106,214,.14)"};
-  if(t.includes("volunteer")) return {color:"#ff9f43",bg:"rgba(255,159,67,.12)"};
-  return {color:"#a9afbd",bg:"rgba(169,175,189,.12)"};
+  return TASK_CATEGORIES_V168[type] || TASK_CATEGORIES_V168["Outros"];
 }
 function taskEffortLabelV167(effort){
   const e=String(effort||"").toLowerCase();
@@ -7140,7 +7144,8 @@ function setTaskChipV166(v){
 }
 function taskTypeChipsV166(){
   const pending=allTasksV94().filter(t=>statusClassV94(t.status)!=="done");
-  const types=[...new Set(pending.map(t=>inferTaskTypeV94(t)))].sort();
+  const present=new Set(pending.map(t=>inferTaskTypeV94(t)));
+  const types=Object.keys(TASK_CATEGORIES_V168).filter(c=>present.has(c));
   const cur=window.__taskTypeChipV166||"";
   const chip=(val,label)=>{
     const c=val?taskCatColorV167(val):null;
@@ -8371,7 +8376,7 @@ function taskSortV113(a,b){
   const pr = priorityRankV113(a.priority) - priorityRankV113(b.priority);
   if(pr !== 0) return pr;
   /* mesma prioridade: Job Search primeiro, depois ação rápida primeiro */
-  const jobRank = t => /job|application|networking|linkedin/i.test(String(t.type||"")) ? 0 : 1;
+  const jobRank = t => (typeof inferTaskTypeV94==="function" && inferTaskTypeV94(t)==="Job Search") ? 0 : 1;
   const jr = jobRank(a) - jobRank(b);
   if(jr !== 0) return jr;
   const quickRank = t => /quick|rapid|rápid/i.test(String(t.effort||"")) ? 0 : 1;
