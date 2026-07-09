@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -2833,9 +2834,6 @@ let state=JSON.parse(localStorage.getItem(storeKey)||"null") || starter;
 let currentPage="home";
 let navIndex=-1;
 
-   Why: v157/v158 used a different localStorage key. That made the dashboard look empty even when
-   the user's previous v116 data still existed in the browser. This restores old daily records
-   without overwriting newer data. */
 (function restoreFromPreviousDashboardStatesV159(){
   const keys = [
     "pedro_dashboard_v116_no_invented_diary",
@@ -10990,8 +10988,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 
 
 <script>
-   Goal: upload this file once to GitHub. After that, routine updates should go to Google Sheets only.
-   This layer syncs all daily tabs returned by Apps Script into the dashboard local state. */
 (function stableDriveSyncV156(){
   const STABLE_VERSION = "v156-stable-drive-sync";
   const LAST_PAYLOAD_KEY = "pedro_dashboard_last_external_payload_v156";
@@ -11207,9 +11203,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 
 
 <script>
-   Problem fixed: past days were not reliably updated because the front-end only synchronized a few exact sheet names
-   and kept old localStorage data when the Apps Script payload used different tab names. This layer keeps the existing
-   layout, but makes the Drive sync more tolerant and updates historical dates from the Google Sheets payload. */
 (function robustDriveSyncV158(){
   const VERSION = "v159-safe-restore-sync";
   const LAST_PAYLOAD_KEY = "pedro_dashboard_last_external_payload_v158";
@@ -11523,13 +11516,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 
 
 <script>
-   Base: versão mais completa anterior.
-   Objetivo:
-   1) Drive/Apps Script vira fonte principal para dias novos.
-   2) Nunca sobrescrever dado preenchido com vazio.
-   3) Se a sync antiga apagar visualmente Screen/Spending/Food/Exercise, restaurar do snapshot.
-   4) Trazer dados de dias passados e atuais, incluindo 23/05 → 01/06, quando existirem no payload do Apps Script.
-*/
 (function driveSyncSeguroV161(){
   const VERSION = "v161-drive-sync-seguro";
   const PAYLOAD_CACHE = "pedro_dashboard_last_external_payload_v161";
@@ -11848,11 +11834,6 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 </script>
 
 <script>
-   - Remove Foco from the visual layout until it is collected in Forms.
-   - Make Energia accept Baixa/Media/Alta as well as 1-5.
-   - Parse Sleep from Daily_Log text like: Qualidade: 4/5 | Duracao: 6h30 | Janela: 3h - 9h30.
-   - Make Hoje / Prioridades do dia use Tasks created by the morning Form.
-*/
 (function dashboardFormsVisualFixV162(){
   const VERSION = "v162-forms-visual-fix";
   const LAST_PAYLOAD_KEYS = [
