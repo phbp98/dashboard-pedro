@@ -2697,6 +2697,161 @@ textarea{min-height:110px;resize:vertical}
 </div>
 
 <script>
+/* ==== data interpreters v164/v166 (carregam antes de tudo) ==== */
+/* Data Interpreters v164/v166 — Spending, Food, Sleep */
+function sleepDurationDisplayV108(sleep){
+  sleep=sleep||{};
+  return sleep.duration || calcSleepDurationV108(sleep.window) || "—";
+}
+function sleepWindowDetailV108(sleep){
+  sleep=sleep||{};
+  if(!sleep.window) return "Horário não registrado.";
+  return `Dormiu de ${sleep.window.replace("–"," a ").replace("-"," a ")}`;
+}
+function spendingByCategory(spending){
+  const categories={};
+  (spending||[]).forEach(x=>{
+    const cat=x.category||"Geral";
+    if(!categories[cat])categories[cat]={items:[],total:0};
+    const amt=Number(String(x.amount).replace(",","."))||0;
+    categories[cat].items.push({label:x.label,amount:amt});
+    categories[cat].total+=amt;
+  });
+  return categories;
+}
+function sleepQualityEmoji(quality){
+  const q=String(quality||"").toLowerCase();
+  if(q.includes("excelente")||q.includes("excellent")||q==="5")return"😴✨ Excelente";
+  if(q.includes("bom")||q.includes("good")||q==="4")return"😴 Bom";
+  if(q.includes("médio")||q.includes("medium")||q==="3")return"😐 Médio";
+  if(q.includes("ruim")||q.includes("poor")||q==="2")return"😔 Ruim";
+  if(q.includes("péssimo")||q.includes("terrible")||q==="1")return"😩 Péssimo";
+  return q||"—";
+}
+function foodByMealType(food){
+  const meals={};
+  (food||[]).forEach(x=>{
+    const meal=x.meal||"Refeição";
+    if(!meals[meal])meals[meal]=[];
+    meals[meal].push(x);
+  });
+  return meals;
+}
+function mealTypeOrder(mealName){
+  const name=String(mealName).toLowerCase();
+  if(name.includes("café")||name.includes("breakfast"))return 1;
+  if(name.includes("almoço")||name.includes("lunch"))return 2;
+  if(name.includes("lanche")||name.includes("snack"))return 3;
+  if(name.includes("jantar")||name.includes("dinner"))return 4;
+  return 5;
+}
+function foodNormalizeTextV166(value){return String(value||"").toLowerCase().normalize?String(value||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,""):String(value||"").toLowerCase();}
+function foodUniqueItemsV166(items){
+  var seen={};
+  return (items||[]).filter(function(x){
+    var key=[x.meal||"",x.items||"",x.calories||"",x.note||""].join("|").toLowerCase().replace(/\s+/g," ").trim();
+    if(seen[key]) return false;
+    seen[key]=true;
+    return true;
+  });
+}
+function foodTextForItemV166(x){return [x.meal,x.items,x.note].filter(function(v){return String(v||"").trim();}).join(" ");}
+function foodKcalFromTextV166(text){
+  var t=foodNormalizeTextV166(text), kcal=0, m;
+  var rules=[
+    ["crous",650],["omelete",250],["frango",280],["poulet",280],["peixe",220],["atum",150],["sardinha",180],
+    ["arroz",250],["macarrao",450],["massa",450],["batata frita",350],["batata",180],["broculis",50],
+    ["salada",40],["hambourger",550],["hamburger",550],["pizza",800],["whey",120],["banana",100],
+    ["caqui",70],["pao",140],["queijo",120],["lentilha",230],["grao-de-bico",230],["bacon",180],
+    ["carne",300],["porco",350],["ovo",70]
+  ];
+  m=t.match(/(\d+)\s*ovos?/);
+  if(m) kcal+=parseInt(m[1],10)*70;
+  for(var i=0;i<rules.length;i++){
+    if(rules[i][0]==="ovo" && m) continue;
+    if(t.indexOf(rules[i][0])>-1) kcal+=rules[i][1];
+  }
+  return kcal||0;
+}
+function foodSplitSummaryV166(text){
+  var clean=String(text||"").replace(/\s+/g," ").trim();
+  if(!clean) return [];
+  var protectedText=clean.replace(/cafe da manha/ig,"cafe-da-manha").replace(/café da manhã/ig,"cafe-da-manha");
+  var parts=protectedText.split(/\s*(?:,\s*(?=(?:no |na |depois|e depois|alem disso|al[ée]m disso|antes de dormir|a tarde|à tarde))|;\s*|\s+\be depois\b\s+|\s+\bdepois\b\s+|\s+\balem disso\b\s+|\s+\balém disso\b\s+)\s*/i);
+  return parts.map(function(p){return p.replace(/cafe-da-manha/g,"cafe da manha").trim();}).filter(Boolean);
+}
+function foodMealLabelV166(text, index){
+  var t=foodNormalizeTextV166(text);
+  if(t.indexOf("cafe da manha")>-1 || t.indexOf("breakfast")>-1) return "Cafe da manha";
+  if(t.indexOf("almoco")>-1 || t.indexOf("lunch")>-1 || t.indexOf("crous")>-1) return "Almoco";
+  if(t.indexOf("janta")>-1 || t.indexOf("jantar")>-1 || t.indexOf("dinner")>-1) return "Jantar";
+  if(t.indexOf("a tarde")>-1 || t.indexOf("lanche")>-1 || t.indexOf("snack")>-1 || t.indexOf("whey")>-1 || t.indexOf("banana")>-1 || t.indexOf("caqui")>-1) return "Lanche";
+  if(t.indexOf("antes de dormir")>-1) return "Ceia";
+  return "Refeicao "+(index+1);
+}
+function foodInterpretedMealsV166(food){
+  var out=[];
+  foodUniqueItemsV166(food).forEach(function(x){
+    var explicitRange=kcalRangeFromText(x.calories);
+    var parts=(String(x.meal||"").toLowerCase().indexOf("resumo")>-1)?foodSplitSummaryV166(x.items):[x.items||x.meal||""];
+    parts.forEach(function(part,idx){
+      var estimate=explicitRange?Math.round((explicitRange.min+explicitRange.max)/2):foodKcalFromTextV166(part);
+      out.push({
+        meal: explicitRange?(x.meal||foodMealLabelV166(part,idx)):foodMealLabelV166(part,idx),
+        items: part,
+        kcal: estimate,
+        kcalLabel: explicitRange?kcalRangeLabel(explicitRange):(estimate?Math.round(estimate*0.85)+"-"+Math.round(estimate*1.15)+" kcal":"A estimar"),
+        raw: foodTextForItemV166(x)
+      });
+    });
+  });
+  return out.filter(function(x){return String(x.items||"").trim();});
+}
+function foodCaloriesRangeV166(meals){
+  var min=0,max=0,found=false;
+  (meals||[]).forEach(function(m){
+    if(m.kcal){found=true;min+=Math.round(m.kcal*0.85);max+=Math.round(m.kcal*1.15);}
+  });
+  return found?{min:min,max:max}:null;
+}
+function foodKcalRange(d){return foodCaloriesRangeV166(foodInterpretedMealsV166(d.food||[]));}
+function sleepCleanTextV164(value){return String(value||"").replace(/[()]/g,"").replace(/\s+/g," ").trim();}
+function sleepPartV164(text,names){var s=String(text||"");for(var i=0;i<names.length;i++){var re=new RegExp(names[i]+"\\s*:\\s*([^|]+)","i");var m=s.match(re);if(m)return sleepCleanTextV164(m[1]);}return"";}
+function sleepWindowV164(sleep){var combined=[sleep&&sleep.duration,sleep&&sleep.window,sleep&&sleep.quality].join(" | ");var fromPart=sleepPartV164(combined,["Janela","Horario","Horário"]);var raw=fromPart||sleepCleanTextV164(sleep&&sleep.window);if(!raw){var m=combined.match(/(\d{1,2}(?:h|:\d{2})?(?:\d{2})?)\s*(?:-|a|à|→)\s*(\d{1,2}(?:h|:\d{2})?(?:\d{2})?)/i);if(m)raw=m[1]+" - "+m[2];}return sleepCleanTextV164(raw).replace(/\s*(?:→|à|a)\s*/i," - ");}
+function sleepDurationV164(sleep){var combined=[sleep&&sleep.duration,sleep&&sleep.window,sleep&&sleep.quality].join(" | ");var fromPart=sleepPartV164(combined,["Duracao","Duração","Duracão"]);var raw=fromPart||sleepCleanTextV164(sleep&&sleep.duration);if(raw&&!/qualidade|janela/i.test(raw))return raw;return calcSleepDurationV108(sleepWindowV164(sleep))||"—";}
+function sleepQualityV164(sleep){var combined=[sleep&&sleep.duration,sleep&&sleep.window,sleep&&sleep.quality].join(" | ");var raw=sleepPartV164(combined,["Qualidade"])||sleepCleanTextV164(sleep&&sleep.quality);if(!raw)return"—";var m=raw.match(/([1-5])(?:\s*\/\s*5)?/);if(m)return m[1]+"/5";return raw;}
+function sleepBlockImproved(d){d.sleep||={duration:"",window:"",quality:""};var duration=sleepDurationV164(d.sleep);var window=sleepWindowV164(d.sleep);var quality=sleepQualityV164(d.sleep);var detail=window?("Dormiu de "+window):"Horario nao registrado";return `<div class="card block" id="sleep">
+    <div class="block-head"><h3>😴 Sono</h3></div>
+    <div class="grid grid-3">
+      <div class="sleep-card-v108 sleep-main-v108"><small>Duração</small><b>${esc(duration)}</b><div class="sleep-detail-v108">${esc(detail)}</div></div>
+      <div class="sleep-card-v108"><small>Horário</small><b>${esc(window||"—")}</b><div class="sleep-detail-v108">Janela interpretada do Drive</div></div>
+      <div class="sleep-card-v108"><small>Qualidade</small><b>${esc(quality)}</b><div class="sleep-detail-v108">Percepção do sono</div></div>
+    </div>
+  </div>`;}
+var SPENDING_CATEGORIES_V163={
+  "Mercado":{keywords:["mercado","supermercado","groceries","courses","alimentation","carrefour","monoprix","lidl","franprix"],pill:"mercado"},
+  "Bares/Restaurantes":{keywords:["bar","bares","restaurante","resto","cafe","café","drink","sortie","jantar","almoco","almoço","cerveja","vinho"],pill:"bares-restaurantes"},
+  "Lavanderia":{keywords:["lavanderia","laverie","lavar roupa","laundry"],pill:"lavanderia"},
+  "Transporte":{keywords:["metro","uber","taxi","train","bus","transporte","ratp","sncf"],pill:"transporte"},
+  "Saúde":{keywords:["pharmacie","farmacia","farmácia","medico","médico","doctor","sante","santé"],pill:"saude"},
+  "Assinaturas/Serviços":{keywords:["free","orange","bouygues","icloud","spotify","netflix","abonnement"],pill:"assinaturas-servicos"},
+  "Outros":{keywords:[],pill:"outros"}
+};
+function spendingNormalizeTextV164(text){var s=String(text||"").toLowerCase();if(s.normalize)s=s.normalize("NFD").replace(/[̀-ͯ]/g,"");return s;}
+function spendingCurrencyV164(text,fallback){var s=String(text||"");if(s.indexOf("R$")>=0)return"BRL";if(s.indexOf("$")>=0&&s.indexOf("R$")<0)return"USD";if(s.indexOf("€")>=0||/\beur\b/i.test(s)||/\beuros?\b/i.test(s))return"EUR";return fallback||"EUR";}
+function spendingAmountFromTextV164(text){var s=String(text||"");var matches=s.match(/(?:R\$|€|\$)?\s*\d+(?:[,.]\d{1,2})?\s*(?:€|euros?|eur|R\$|\$)?/ig);if(!matches||!matches.length)return null;var token=matches[matches.length-1];var num=token.match(/\d+(?:[,.]\d{1,2})?/);if(!num)return null;return Number(num[0].replace(",","."));}
+function spendingLabelFromTextV164(text){var label=String(text||"").replace(/(?:R\$|€|\$)?\s*\d+(?:[,.]\d{1,2})?\s*(?:€|euros?|eur|R\$|\$)?/ig,"").replace(/\b(?:euros?|eur)\b/ig,"").replace(/\s*[:=-]\s*$/,"").replace(/^\s*[:=-]\s*/,"").trim();return label||"Gasto";}
+function splitSpendingPartsV164(text){var s=String(text||"");var parts=[];var current="";for(var i=0;i<s.length;i++){var ch=s.charAt(i);var prev=i>0?s.charAt(i-1):"";var next=i<s.length-1?s.charAt(i+1):"";var decimalComma=ch===","&&/\d/.test(prev)&&/\d/.test(next);if(ch===";"||ch==="\n"||ch==="\r"||(ch===","&&!decimalComma)){if(current.trim())parts.push(current.trim());current="";}else{current+=ch;}}if(current.trim())parts.push(current.trim());return parts;}
+function parseSpendingText(text,fallbackCurrency){var entries=[];if(!text)return entries;var parts=splitSpendingPartsV164(text);for(var i=0;i<parts.length;i++){var part=String(parts[i]||"").trim();if(!part)continue;var amount=spendingAmountFromTextV164(part);if(amount===null||isNaN(amount))continue;var label=spendingLabelFromTextV164(part);var currency=spendingCurrencyV164(part,fallbackCurrency||"EUR");entries.push({category:classifySpendingItem(label,amount),label:label,amount:amount,currency:currency,raw:part});}return entries;}
+function spendingInterpretedItemsV164(spending){var items=[];(spending||[]).forEach(function(x){var labelRaw=String(x.label||"").trim();var amountRaw=String(x.amount||"").trim();var noteRaw=String(x.note||"").trim();var raw=spendingAmountFromTextV164(labelRaw)!==null?labelRaw:[labelRaw,amountRaw].filter(function(v){return String(v||"").trim()!=="";}).join(" ");var currency=spendingCurrencyV164([x.note,x.currency,x.moeda].join(" "),"EUR");var parsed=parseSpendingText(raw,currency);if(parsed.length){parsed.forEach(function(p){items.push(p);});return;}var amount=spendingAmountFromTextV164(x.amount);if(amount===null||isNaN(amount))amount=Number(String(x.amount||"").replace(",","."));if(isNaN(amount))amount=0;if(!amount&&!String(x.label||"").trim())return;var label=String(x.label||x.category||"Gasto").trim();items.push({category:classifySpendingItem(label,amount),label:label,amount:amount,currency:currency,raw:raw||noteRaw||label});});var seen={};return items.filter(function(item){var key=[item.category,spendingNormalizeTextV164(item.label),item.amount,item.currency,spendingNormalizeTextV164(item.raw)].join("|");if(seen[key])return false;seen[key]=true;return true;});}
+function spendingTotalByCurrencyV164(items){var totals={};items.forEach(function(item){var cur=item.currency||"EUR";totals[cur]=(totals[cur]||0)+item.amount;});return totals;}
+function spendingTotalsLabelV164(totals){return Object.keys(totals).map(function(cur){return totals[cur].toFixed(2)+" "+cur;}).join(" + ")||"0.00 EUR";}
+function classifySpendingItem(label,amount){var txt=spendingNormalizeTextV164(label);var cats=Object.keys(SPENDING_CATEGORIES_V163);for(var i=0;i<cats.length;i++){var cat=cats[i];if(cat==="Outros")continue;var kws=SPENDING_CATEGORIES_V163[cat].keywords;for(var j=0;j<kws.length;j++){if(txt.indexOf(spendingNormalizeTextV164(kws[j]))>=0)return cat;}}return"Outros";}
+function spendingByFixedCategories(spending){var categories={};Object.keys(SPENDING_CATEGORIES_V163).forEach(function(cat){categories[cat]={items:[],total:0};});spendingInterpretedItemsV164(spending).forEach(function(item){if(!categories[item.category])categories[item.category]={items:[],total:0};categories[item.category].items.push(item);if(item.currency==="EUR")categories[item.category].total+=item.amount;});return categories;}
+function spendingBlockImproved(d){var spending=d.spending||[];var items=spendingInterpretedItemsV164(spending);var totals=spendingTotalByCurrencyV164(items);if(!items.length){return'<div class="card block" id="spending"><div class="block-head"><h3>💵 Spending</h3><span class="pill">0.00 EUR</span></div><div class="empty">Sem gastos nesse dia.</div></div>';}var byCategory=spendingByFixedCategories(spending);var categoryCards=Object.keys(byCategory).filter(function(cat){return byCategory[cat].items.length;}).sort(function(a,b){return byCategory[b].total-byCategory[a].total;}).map(function(cat){var data=byCategory[cat];var config=SPENDING_CATEGORIES_V163[cat]||SPENDING_CATEGORIES_V163.Outros;var catTotals=spendingTotalByCurrencyV164(data.items);var renderedItems=data.items.map(function(item){return'<div class="cat-item"><span><span class="spending-pill '+config.pill+'">'+esc(cat)+'</span> '+esc(item.label)+'<div class="spending-raw">Bruto: '+esc(item.raw)+'</div></span><b>'+item.amount.toFixed(2)+' '+esc(item.currency||"EUR")+'</b></div>';}).join("");return'<div class="spending-cat"><div class="cat-head"><span>'+esc(cat)+'</span><b>'+esc(spendingTotalsLabelV164(catTotals))+'</b></div><div class="cat-items">'+renderedItems+'</div></div>';}).join("");return'<div class="card block" id="spending"><div class="block-head"><h3>💵 Spending</h3><span class="pill">'+esc(spendingTotalsLabelV164(totals))+'</span></div><div class="spending-improved">'+categoryCards+'</div></div>';}
+function foodBlockImproved(d){var meals=foodInterpretedMealsV166(d.food||[]);var range=foodCaloriesRangeV166(meals);if(!meals.length)return'<div class="card block" id="food"><div class="block-head"><h3>🍽️ Alimentação</h3><span class="pill">Sem registro</span></div><div class="empty">Sem refeições registradas.</div></div>';var mealsByType={};meals.forEach(function(m){var type=m.meal||"Refeicao";if(!mealsByType[type])mealsByType[type]=[];mealsByType[type].push(m);});var sortedTypes=Object.keys(mealsByType).sort(function(a,b){return mealTypeOrder(a)-mealTypeOrder(b);});var renderedMeals=sortedTypes.map(function(type){var mealsOfType=mealsByType[type];var totalKcal=mealsOfType.reduce(function(s,m){return s+(m.kcal||0);},0);var renderedItems=mealsOfType.map(function(m){return'<div class="meal-row"><span>'+esc(m.items)+'</span><b>'+esc(m.kcalLabel)+'</b></div>';}).join("");return'<div class="meal-type"><div class="meal-type-header"><span>'+esc(type)+'</span><b>~'+Math.round(totalKcal)+'kcal</b></div><div class="meal-items">'+renderedItems+'</div></div>';}).join("");var totalKcalDisplay=range?range.min+"-"+range.max+"kcal":"A estimar";return'<div class="card block" id="food"><div class="block-head"><h3>🍽️ Alimentação</h3><span class="pill">~'+esc(totalKcalDisplay)+'</span></div><div class="meals-container">'+renderedMeals+'</div></div>';}
+/* ==== fim data interpreters ==== */
+
 const storeKey="pedro_dashboard_v116_no_invented_diary";
 const today="2026-05-20";
 
@@ -2964,14 +3119,6 @@ function kcalRangeFromText(v){
 function kcalRangeLabel(range){
   if(!range) return "—";
   return range.min===range.max ? `${range.min} kcal` : `${range.min}–${range.max} kcal`;
-}
-function foodKcalRange(d){
-  let min=0,max=0,found=false;
-  (d.food||[]).forEach(f=>{
-    const r=kcalRangeFromText(f.calories);
-    if(r){found=true;min+=r.min;max+=r.max;}
-  });
-  return found ? {min,max} : null;
 }
 function exerciseKcalRange(d){
   let min=0,max=0,found=false;
@@ -12259,160 +12406,7 @@ function renderFullTargetCardV139(x){const rec=targetRecommendationGroupV135(x);
 })();
 </script>
 
-<script>
-/* Data Interpreters v164/v166 — Spending, Food, Sleep */
-function sleepDurationDisplayV108(sleep){
-  sleep=sleep||{};
-  return sleep.duration || calcSleepDurationV108(sleep.window) || "—";
-}
-function sleepWindowDetailV108(sleep){
-  sleep=sleep||{};
-  if(!sleep.window) return "Horário não registrado.";
-  return `Dormiu de ${sleep.window.replace("–"," a ").replace("-"," a ")}`;
-}
-function spendingByCategory(spending){
-  const categories={};
-  (spending||[]).forEach(x=>{
-    const cat=x.category||"Geral";
-    if(!categories[cat])categories[cat]={items:[],total:0};
-    const amt=Number(String(x.amount).replace(",","."))||0;
-    categories[cat].items.push({label:x.label,amount:amt});
-    categories[cat].total+=amt;
-  });
-  return categories;
-}
-function sleepQualityEmoji(quality){
-  const q=String(quality||"").toLowerCase();
-  if(q.includes("excelente")||q.includes("excellent")||q==="5")return"😴✨ Excelente";
-  if(q.includes("bom")||q.includes("good")||q==="4")return"😴 Bom";
-  if(q.includes("médio")||q.includes("medium")||q==="3")return"😐 Médio";
-  if(q.includes("ruim")||q.includes("poor")||q==="2")return"😔 Ruim";
-  if(q.includes("péssimo")||q.includes("terrible")||q==="1")return"😩 Péssimo";
-  return q||"—";
-}
-function foodByMealType(food){
-  const meals={};
-  (food||[]).forEach(x=>{
-    const meal=x.meal||"Refeição";
-    if(!meals[meal])meals[meal]=[];
-    meals[meal].push(x);
-  });
-  return meals;
-}
-function mealTypeOrder(mealName){
-  const name=String(mealName).toLowerCase();
-  if(name.includes("café")||name.includes("breakfast"))return 1;
-  if(name.includes("almoço")||name.includes("lunch"))return 2;
-  if(name.includes("lanche")||name.includes("snack"))return 3;
-  if(name.includes("jantar")||name.includes("dinner"))return 4;
-  return 5;
-}
-function foodNormalizeTextV166(value){return String(value||"").toLowerCase().normalize?String(value||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,""):String(value||"").toLowerCase();}
-function foodUniqueItemsV166(items){
-  var seen={};
-  return (items||[]).filter(function(x){
-    var key=[x.meal||"",x.items||"",x.calories||"",x.note||""].join("|").toLowerCase().replace(/\s+/g," ").trim();
-    if(seen[key]) return false;
-    seen[key]=true;
-    return true;
-  });
-}
-function foodTextForItemV166(x){return [x.meal,x.items,x.note].filter(function(v){return String(v||"").trim();}).join(" ");}
-function foodKcalFromTextV166(text){
-  var t=foodNormalizeTextV166(text), kcal=0, m;
-  var rules=[
-    ["crous",650],["omelete",250],["frango",280],["poulet",280],["peixe",220],["atum",150],["sardinha",180],
-    ["arroz",250],["macarrao",450],["massa",450],["batata frita",350],["batata",180],["broculis",50],
-    ["salada",40],["hambourger",550],["hamburger",550],["pizza",800],["whey",120],["banana",100],
-    ["caqui",70],["pao",140],["queijo",120],["lentilha",230],["grao-de-bico",230],["bacon",180],
-    ["carne",300],["porco",350],["ovo",70]
-  ];
-  m=t.match(/(\d+)\s*ovos?/);
-  if(m) kcal+=parseInt(m[1],10)*70;
-  for(var i=0;i<rules.length;i++){
-    if(rules[i][0]==="ovo" && m) continue;
-    if(t.indexOf(rules[i][0])>-1) kcal+=rules[i][1];
-  }
-  return kcal||0;
-}
-function foodSplitSummaryV166(text){
-  var clean=String(text||"").replace(/\s+/g," ").trim();
-  if(!clean) return [];
-  var protectedText=clean.replace(/cafe da manha/ig,"cafe-da-manha").replace(/café da manhã/ig,"cafe-da-manha");
-  var parts=protectedText.split(/\s*(?:,\s*(?=(?:no |na |depois|e depois|alem disso|al[ée]m disso|antes de dormir|a tarde|à tarde))|;\s*|\s+\be depois\b\s+|\s+\bdepois\b\s+|\s+\balem disso\b\s+|\s+\balém disso\b\s+)\s*/i);
-  return parts.map(function(p){return p.replace(/cafe-da-manha/g,"cafe da manha").trim();}).filter(Boolean);
-}
-function foodMealLabelV166(text, index){
-  var t=foodNormalizeTextV166(text);
-  if(t.indexOf("cafe da manha")>-1 || t.indexOf("breakfast")>-1) return "Cafe da manha";
-  if(t.indexOf("almoco")>-1 || t.indexOf("lunch")>-1 || t.indexOf("crous")>-1) return "Almoco";
-  if(t.indexOf("janta")>-1 || t.indexOf("jantar")>-1 || t.indexOf("dinner")>-1) return "Jantar";
-  if(t.indexOf("a tarde")>-1 || t.indexOf("lanche")>-1 || t.indexOf("snack")>-1 || t.indexOf("whey")>-1 || t.indexOf("banana")>-1 || t.indexOf("caqui")>-1) return "Lanche";
-  if(t.indexOf("antes de dormir")>-1) return "Ceia";
-  return "Refeicao "+(index+1);
-}
-function foodInterpretedMealsV166(food){
-  var out=[];
-  foodUniqueItemsV166(food).forEach(function(x){
-    var explicitRange=kcalRangeFromText(x.calories);
-    var parts=(String(x.meal||"").toLowerCase().indexOf("resumo")>-1)?foodSplitSummaryV166(x.items):[x.items||x.meal||""];
-    parts.forEach(function(part,idx){
-      var estimate=explicitRange?Math.round((explicitRange.min+explicitRange.max)/2):foodKcalFromTextV166(part);
-      out.push({
-        meal: explicitRange?(x.meal||foodMealLabelV166(part,idx)):foodMealLabelV166(part,idx),
-        items: part,
-        kcal: estimate,
-        kcalLabel: explicitRange?kcalRangeLabel(explicitRange):(estimate?Math.round(estimate*0.85)+"-"+Math.round(estimate*1.15)+" kcal":"A estimar"),
-        raw: foodTextForItemV166(x)
-      });
-    });
-  });
-  return out.filter(function(x){return String(x.items||"").trim();});
-}
-function foodCaloriesRangeV166(meals){
-  var min=0,max=0,found=false;
-  (meals||[]).forEach(function(m){
-    if(m.kcal){found=true;min+=Math.round(m.kcal*0.85);max+=Math.round(m.kcal*1.15);}
-  });
-  return found?{min:min,max:max}:null;
-}
-function foodKcalRange(d){return foodCaloriesRangeV166(foodInterpretedMealsV166(d.food||[]));}
-function sleepCleanTextV164(value){return String(value||"").replace(/[()]/g,"").replace(/\s+/g," ").trim();}
-function sleepPartV164(text,names){var s=String(text||"");for(var i=0;i<names.length;i++){var re=new RegExp(names[i]+"\\s*:\\s*([^|]+)","i");var m=s.match(re);if(m)return sleepCleanTextV164(m[1]);}return"";}
-function sleepWindowV164(sleep){var combined=[sleep&&sleep.duration,sleep&&sleep.window,sleep&&sleep.quality].join(" | ");var fromPart=sleepPartV164(combined,["Janela","Horario","Horário"]);var raw=fromPart||sleepCleanTextV164(sleep&&sleep.window);if(!raw){var m=combined.match(/(\d{1,2}(?:h|:\d{2})?(?:\d{2})?)\s*(?:-|a|à|→)\s*(\d{1,2}(?:h|:\d{2})?(?:\d{2})?)/i);if(m)raw=m[1]+" - "+m[2];}return sleepCleanTextV164(raw).replace(/\s*(?:→|à|a)\s*/i," - ");}
-function sleepDurationV164(sleep){var combined=[sleep&&sleep.duration,sleep&&sleep.window,sleep&&sleep.quality].join(" | ");var fromPart=sleepPartV164(combined,["Duracao","Duração","Duracão"]);var raw=fromPart||sleepCleanTextV164(sleep&&sleep.duration);if(raw&&!/qualidade|janela/i.test(raw))return raw;return calcSleepDurationV108(sleepWindowV164(sleep))||"—";}
-function sleepQualityV164(sleep){var combined=[sleep&&sleep.duration,sleep&&sleep.window,sleep&&sleep.quality].join(" | ");var raw=sleepPartV164(combined,["Qualidade"])||sleepCleanTextV164(sleep&&sleep.quality);if(!raw)return"—";var m=raw.match(/([1-5])(?:\s*\/\s*5)?/);if(m)return m[1]+"/5";return raw;}
-function sleepBlockImproved(d){d.sleep||={duration:"",window:"",quality:""};var duration=sleepDurationV164(d.sleep);var window=sleepWindowV164(d.sleep);var quality=sleepQualityV164(d.sleep);var detail=window?("Dormiu de "+window):"Horario nao registrado";return `<div class="card block" id="sleep">
-    <div class="block-head"><h3>😴 Sono</h3></div>
-    <div class="grid grid-3">
-      <div class="sleep-card-v108 sleep-main-v108"><small>Duração</small><b>${esc(duration)}</b><div class="sleep-detail-v108">${esc(detail)}</div></div>
-      <div class="sleep-card-v108"><small>Horário</small><b>${esc(window||"—")}</b><div class="sleep-detail-v108">Janela interpretada do Drive</div></div>
-      <div class="sleep-card-v108"><small>Qualidade</small><b>${esc(quality)}</b><div class="sleep-detail-v108">Percepção do sono</div></div>
-    </div>
-  </div>`;}
-var SPENDING_CATEGORIES_V163={
-  "Mercado":{keywords:["mercado","supermercado","groceries","courses","alimentation","carrefour","monoprix","lidl","franprix"],pill:"mercado"},
-  "Bares/Restaurantes":{keywords:["bar","bares","restaurante","resto","cafe","café","drink","sortie","jantar","almoco","almoço","cerveja","vinho"],pill:"bares-restaurantes"},
-  "Lavanderia":{keywords:["lavanderia","laverie","lavar roupa","laundry"],pill:"lavanderia"},
-  "Transporte":{keywords:["metro","uber","taxi","train","bus","transporte","ratp","sncf"],pill:"transporte"},
-  "Saúde":{keywords:["pharmacie","farmacia","farmácia","medico","médico","doctor","sante","santé"],pill:"saude"},
-  "Assinaturas/Serviços":{keywords:["free","orange","bouygues","icloud","spotify","netflix","abonnement"],pill:"assinaturas-servicos"},
-  "Outros":{keywords:[],pill:"outros"}
-};
-function spendingNormalizeTextV164(text){var s=String(text||"").toLowerCase();if(s.normalize)s=s.normalize("NFD").replace(/[̀-ͯ]/g,"");return s;}
-function spendingCurrencyV164(text,fallback){var s=String(text||"");if(s.indexOf("R$")>=0)return"BRL";if(s.indexOf("$")>=0&&s.indexOf("R$")<0)return"USD";if(s.indexOf("€")>=0||/\beur\b/i.test(s)||/\beuros?\b/i.test(s))return"EUR";return fallback||"EUR";}
-function spendingAmountFromTextV164(text){var s=String(text||"");var matches=s.match(/(?:R\$|€|\$)?\s*\d+(?:[,.]\d{1,2})?\s*(?:€|euros?|eur|R\$|\$)?/ig);if(!matches||!matches.length)return null;var token=matches[matches.length-1];var num=token.match(/\d+(?:[,.]\d{1,2})?/);if(!num)return null;return Number(num[0].replace(",","."));}
-function spendingLabelFromTextV164(text){var label=String(text||"").replace(/(?:R\$|€|\$)?\s*\d+(?:[,.]\d{1,2})?\s*(?:€|euros?|eur|R\$|\$)?/ig,"").replace(/\b(?:euros?|eur)\b/ig,"").replace(/\s*[:=-]\s*$/,"").replace(/^\s*[:=-]\s*/,"").trim();return label||"Gasto";}
-function splitSpendingPartsV164(text){var s=String(text||"");var parts=[];var current="";for(var i=0;i<s.length;i++){var ch=s.charAt(i);var prev=i>0?s.charAt(i-1):"";var next=i<s.length-1?s.charAt(i+1):"";var decimalComma=ch===","&&/\d/.test(prev)&&/\d/.test(next);if(ch===";"||ch==="\n"||ch==="\r"||(ch===","&&!decimalComma)){if(current.trim())parts.push(current.trim());current="";}else{current+=ch;}}if(current.trim())parts.push(current.trim());return parts;}
-function parseSpendingText(text,fallbackCurrency){var entries=[];if(!text)return entries;var parts=splitSpendingPartsV164(text);for(var i=0;i<parts.length;i++){var part=String(parts[i]||"").trim();if(!part)continue;var amount=spendingAmountFromTextV164(part);if(amount===null||isNaN(amount))continue;var label=spendingLabelFromTextV164(part);var currency=spendingCurrencyV164(part,fallbackCurrency||"EUR");entries.push({category:classifySpendingItem(label,amount),label:label,amount:amount,currency:currency,raw:part});}return entries;}
-function spendingInterpretedItemsV164(spending){var items=[];(spending||[]).forEach(function(x){var labelRaw=String(x.label||"").trim();var amountRaw=String(x.amount||"").trim();var noteRaw=String(x.note||"").trim();var raw=spendingAmountFromTextV164(labelRaw)!==null?labelRaw:[labelRaw,amountRaw].filter(function(v){return String(v||"").trim()!=="";}).join(" ");var currency=spendingCurrencyV164([x.note,x.currency,x.moeda].join(" "),"EUR");var parsed=parseSpendingText(raw,currency);if(parsed.length){parsed.forEach(function(p){items.push(p);});return;}var amount=spendingAmountFromTextV164(x.amount);if(amount===null||isNaN(amount))amount=Number(String(x.amount||"").replace(",","."));if(isNaN(amount))amount=0;if(!amount&&!String(x.label||"").trim())return;var label=String(x.label||x.category||"Gasto").trim();items.push({category:classifySpendingItem(label,amount),label:label,amount:amount,currency:currency,raw:raw||noteRaw||label});});var seen={};return items.filter(function(item){var key=[item.category,spendingNormalizeTextV164(item.label),item.amount,item.currency,spendingNormalizeTextV164(item.raw)].join("|");if(seen[key])return false;seen[key]=true;return true;});}
-function spendingTotalByCurrencyV164(items){var totals={};items.forEach(function(item){var cur=item.currency||"EUR";totals[cur]=(totals[cur]||0)+item.amount;});return totals;}
-function spendingTotalsLabelV164(totals){return Object.keys(totals).map(function(cur){return totals[cur].toFixed(2)+" "+cur;}).join(" + ")||"0.00 EUR";}
-function classifySpendingItem(label,amount){var txt=spendingNormalizeTextV164(label);var cats=Object.keys(SPENDING_CATEGORIES_V163);for(var i=0;i<cats.length;i++){var cat=cats[i];if(cat==="Outros")continue;var kws=SPENDING_CATEGORIES_V163[cat].keywords;for(var j=0;j<kws.length;j++){if(txt.indexOf(spendingNormalizeTextV164(kws[j]))>=0)return cat;}}return"Outros";}
-function spendingByFixedCategories(spending){var categories={};Object.keys(SPENDING_CATEGORIES_V163).forEach(function(cat){categories[cat]={items:[],total:0};});spendingInterpretedItemsV164(spending).forEach(function(item){if(!categories[item.category])categories[item.category]={items:[],total:0};categories[item.category].items.push(item);if(item.currency==="EUR")categories[item.category].total+=item.amount;});return categories;}
-function spendingBlockImproved(d){var spending=d.spending||[];var items=spendingInterpretedItemsV164(spending);var totals=spendingTotalByCurrencyV164(items);if(!items.length){return'<div class="card block" id="spending"><div class="block-head"><h3>💵 Spending</h3><span class="pill">0.00 EUR</span></div><div class="empty">Sem gastos nesse dia.</div></div>';}var byCategory=spendingByFixedCategories(spending);var categoryCards=Object.keys(byCategory).filter(function(cat){return byCategory[cat].items.length;}).sort(function(a,b){return byCategory[b].total-byCategory[a].total;}).map(function(cat){var data=byCategory[cat];var config=SPENDING_CATEGORIES_V163[cat]||SPENDING_CATEGORIES_V163.Outros;var catTotals=spendingTotalByCurrencyV164(data.items);var renderedItems=data.items.map(function(item){return'<div class="cat-item"><span><span class="spending-pill '+config.pill+'">'+esc(cat)+'</span> '+esc(item.label)+'<div class="spending-raw">Bruto: '+esc(item.raw)+'</div></span><b>'+item.amount.toFixed(2)+' '+esc(item.currency||"EUR")+'</b></div>';}).join("");return'<div class="spending-cat"><div class="cat-head"><span>'+esc(cat)+'</span><b>'+esc(spendingTotalsLabelV164(catTotals))+'</b></div><div class="cat-items">'+renderedItems+'</div></div>';}).join("");return'<div class="card block" id="spending"><div class="block-head"><h3>💵 Spending</h3><span class="pill">'+esc(spendingTotalsLabelV164(totals))+'</span></div><div class="spending-improved">'+categoryCards+'</div></div>';}
-function foodBlockImproved(d){var meals=foodInterpretedMealsV166(d.food||[]);var range=foodCaloriesRangeV166(meals);if(!meals.length)return'<div class="card block" id="food"><div class="block-head"><h3>🍽️ Alimentação</h3><span class="pill">Sem registro</span></div><div class="empty">Sem refeições registradas.</div></div>';var mealsByType={};meals.forEach(function(m){var type=m.meal||"Refeicao";if(!mealsByType[type])mealsByType[type]=[];mealsByType[type].push(m);});var sortedTypes=Object.keys(mealsByType).sort(function(a,b){return mealTypeOrder(a)-mealTypeOrder(b);});var renderedMeals=sortedTypes.map(function(type){var mealsOfType=mealsByType[type];var totalKcal=mealsOfType.reduce(function(s,m){return s+(m.kcal||0);},0);var renderedItems=mealsOfType.map(function(m){return'<div class="meal-row"><span>'+esc(m.items)+'</span><b>'+esc(m.kcalLabel)+'</b></div>';}).join("");return'<div class="meal-type"><div class="meal-type-header"><span>'+esc(type)+'</span><b>~'+Math.round(totalKcal)+'kcal</b></div><div class="meal-items">'+renderedItems+'</div></div>';}).join("");var totalKcalDisplay=range?range.min+"-"+range.max+"kcal":"A estimar";return'<div class="card block" id="food"><div class="block-head"><h3>🍽️ Alimentação</h3><span class="pill">~'+esc(totalKcalDisplay)+'</span></div><div class="meals-container">'+renderedMeals+'</div></div>';}
-</script>
+
 
 </body>
 </html>
